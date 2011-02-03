@@ -1,0 +1,129 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import org.astm.ccr.StructuredProductType;
+import org.astm.ccr.StructuredProductType.Product;
+import org.astm.ccr.Medications;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.CodeType;
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+
+rule "Medication type must of one of the required string values"
+@title (Check for recommended code set for medication type)
+@testid (7d8b190b-d511-4b3c-abd4-a01a812b52d8)
+@description (This test checks for one of the following Strings for <Type>:  Medication, IV Fluid, Parental Nutrition, Supplemental Nutrition, Immunization, Disposable, Supplies, Device, Implantable Device, Durable Medical Equipment.)
+@source (E2369-05 Table A1.1 Page 21)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Medications($m:medication)
+		$spt:StructuredProductType( $ty:type ) from $m
+		CodedDescriptionType( this == $ty, $t:text not in ("Medication", 
+			"IV Fluid", "Parental Nutrition", "Supplemental Nutrition", 
+			"Immunization", "Disposable", "Supplies", "Device", "Implantable Device", 
+			"Durable Medical Equipment") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Medication ["+
+			$spt.getCCRDataObjectID()+"] Type ["+$t+"] does not appear to be one of the required String values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);	
+end
+
+rule "Medication status must of one of the required string values"
+@title (Check for recommended code set for medication status)
+@testid (d58ebc02-ae7f-4b24-9c41-9204f485a6b4)
+@description (This test checks for one of the following Strings for <Status>:  Active, Inactive, On Hold, Prior History No Longer Active.)
+@source (E2369-05 Table A1.1 Page 21)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Medications($m:medication)
+		$spt:StructuredProductType( $s:status  ) from $m
+		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+			"On Hold", "Prior History No Longer Active") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Medication ["+
+			$spt.getCCRDataObjectID()+"] Status ["+$t+"] does not appear to be one of the required String values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);	
+end
+
+rule "Medication product code should be encoded in RXNORM or NDC"
+@title (Medication product code should be encoded in RXNORM or NDC)
+@testid (8bf19d27-5b71-4786-8330-85c7469ec110)
+@description (This test checks for at least one code with a coding system of either RxNorm or NDC for a medication.  An NCD Code or RxNorm Code (preferred) should be used for <ProductName>.)
+@source (E2369-05 Table A1.1 Page 21)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Medications($m:medication )
+		$s:StructuredProductType( $p:product) from $m
+		Product( this == $p, $pn:productName )
+		CodedDescriptionType( this == $pn, $c:code  )
+		not (CodeType( codingSystem in ("rxnorm", "RxNorm", "RXNORM", "ndc", "NDC", "National Drug Code") ) from $c)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Medication ["+
+			$s.getCCRDataObjectID()+"] ProductName does not appear to be coded in either RxNorm or NDC");
+		e.setServerity(ErrorType.WARN);
+		val_result.addError(testid, e);	
+end

@@ -1,0 +1,94 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.ResultType;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.CodeType;
+import org.astm.ccr.extension.Results;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Results type must be one of the required string values"
+@title (Results type must be one of the required string values)
+@testid (92a69a47-5e3d-4737-9185-8093641221b2)
+@description (Results type must be one of the required string values: Hematology, Chemistry, Serology, Virology, Toxicology, Microbiology, Imaging - X-ray, Ultrasound, CT, MRI, Angiography, Cardiac Echo, Nuclear Medicine, Pathology, Procedure.)
+@source (E2369-05 Table A1.1 Page 26)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Results( $r:result )
+		$rt:ResultType($ty:type) from $r
+		CodedDescriptionType (this == $ty, $tx:text not in ("Hematology", "Chemistry", "Serology", 
+			"Virology", "Toxicology", "Microbiology", "Imaging - X-ray", "Ultrasound", 
+			"CT", "MRI", "Angiography", "Cardiac Echo", "Nuclear Medicine", "Pathology",
+			"Procedure") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Result ["+$rt.getCCRDataObjectID()+"] type ["+$tx+"] is not a valid value");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Results and VitalSigns description should be coded in either CPT or LOINC where applicable"
+@title (Results and VitalSigns description should be coded in either CPT or LOINC where applicable)
+@testid (255b550a-4c64-4890-ae1a-e264fb2bd895)
+@description (Results and VitalSigns description should be coded in either CPT or LOINC where applicable)
+@source (E2369-05 Table A1.1 Page 27)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$rt:ResultType( $d:description )
+		CodedDescriptionType( this == $d, $c:code  )
+		not (CodeType( codingSystem in ("CPT", "LOINC") ) from $c)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.PASSED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("ResultType ["+$rt.getCCRDataObjectID()+"] does not appear to be coded in CPT or LOINC");
+		e.setServerity(ErrorType.WARN);
+		val_result.addError(testid, e);
+end

@@ -1,0 +1,93 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.CCRCodedDataObjectType;
+import org.astm.ccr.ActorType;
+import org.astm.ccr.DateTimeType;
+import org.astm.ccr.InternalCCRLink;
+import org.astm.ccr.IDType
+import org.astm.ccr.SourceType;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Each CCRDataObjectID must have a unique value"
+@title (Each CCRDataObjectID must have a unique value)
+@testid (82be6b78-f38d-4548-9b5d-b593def411b8)
+@description (This test makes sure an CCRDataObjectID value is not duplicated.)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
+		CCRCodedDataObjectType(this != $c, CCRDataObjectID == $id)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("An CCRDataObjectID value of ["+
+			$id+"] is used in more than once");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "A CCRDataObjectID must not equal an ActorObjectID"
+@title (A CCRDataObjectID must not equal an ActorObjectID)
+@testid (a2b66b98-f38s-4148-9b5d-b593def411b8)
+@description (This test makes sure an CCRDataObjectID value is not the same as an ActorObjectID.)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
+		ActorType( actorObjectID == $id )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("An CCRDataObjectID value of ["+
+			$id+"] is also used as an ActorObjectID");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

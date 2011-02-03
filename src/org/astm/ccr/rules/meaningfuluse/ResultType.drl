@@ -1,0 +1,65 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#created on: Jun 10, 2010
+package org.astm.ccr.rules.meaningfuluse
+
+#list any import classes here.
+
+
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+
+/*
+rule "Lab results must be coded in LOINC - Using Description"
+@title (Lab results must be coded in LOINC)
+@testid (5978f3c2-f7ae-47f9-aa6a-4c3809db3729)
+@description (Checks to see if any lab results coded in <Description> XML element are coded in LOINC. If labs send to EHR using LOINC, certified EHR technology must provide LOINC codes in CCR)
+@source (RIN 0991-AB58 Sec 170.205(2)(iii)(A))
+@profile (RIN 0991-AB58)
+@author (openhealthdata)
+	when
+		not (
+			$r: ResultType( $d:description, $t:type ) and
+			CodedDescriptionType (this == $t, text in ("Hematology", "Chemistry", "Serology", "Virology", "Toxicology", "Microbiology")) and
+			CodedDescriptionType( this == $d, $c:code ) and
+			CodeType( codingSystem in ("LOINC", "loinc")) from $c
+		)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("No Result which a <Description> appears to be coded in LOINC");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+*/
+// TODO repeat for <Test> child Sec 170.205(2)(iii)(A)
+// TODO rule for no results Sec 170.205(2)(iii)

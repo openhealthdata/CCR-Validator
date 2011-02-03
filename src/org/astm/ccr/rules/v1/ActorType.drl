@@ -1,0 +1,117 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import org.astm.ccr.ActorType;
+import org.astm.ccr.CodedDescriptionType;
+
+import java.util.List;
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Each Actor must have a unique ActorObjectID"
+@title (Each Actor must have a unique ActorObjectID)
+@testid (c894626a-b024-4e91-a39f-0da14411cf45)
+@description (This test makes sure an ActorObjectID value is not duplicated)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$a1:ActorType($id1:actorObjectID)
+		$a2:ActorType(this != $a1, actorObjectID == $id1)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Actor with ActorObjectID of ["+
+			$id1+"] is used in more than one <Actor>");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "ActorObjectID format validity"
+@title (Each Actor ActorObjectID must conform to the proper format)
+@testid (fd36743c-599a-4e94-86d6-d588449b5352)
+@description (The ID must be made up of characters in the set A-Z, a-z, 0-9, dash (-), underscore (_) and period (.). The first character must be from the set A-Z, a-z. It can be of any character length.)
+@source (E2369-05 Table A2.18)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		ActorType($aid:actorObjectID not matches "[a-zA-Z]([\\w\\-_\\.])*")
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("ActorObjectID of ["+$aid+"] does not conform to the required format");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Valid Actor <Status> values"
+@title (Each Actor must have a unique ActorObjectID)
+@testid (77f34a4f-d8ba-47fd-a5f9-12dc114730e7)
+@description (This is a CodedDescriptionType with restricted content that must be one of the defined structured text values. Active, Prior History No Longer Active, Unknown.)
+@source (E2369-05 Table A2.18)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		ActorType($s:status)
+		CodedDescriptionType( this == $s, text not in ("Active", "Prior History No Longer Active", 
+			"Unknown") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Actor <Status> is not one of: Active, Prior History No Longer Active, Unknown.");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+

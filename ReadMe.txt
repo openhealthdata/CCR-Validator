@@ -1,0 +1,53 @@
+Copyright 2010 OpenHealthData, Inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+ValidationService
+=================
+This is a simple J2EE Servlet implementation of the CCR Validator.  This 
+Validator utilizes a RETE based rules engine (JBoss Drools) to implement 
+the validation testing.  This allows for the rules to be updated independently 
+and more importantly supports the implementation of rule packages for 
+different profiles.
+
+The validation rules are stored in "org/astm/ccr/rules."  The subfolder "core" 
+contains the rules to explode the CCR and assert all the components into 
+working memory.  The subfolder "v1" contains the validation rules for ASTM 
+E2869-05 Continuity of Care Record Implementation Guide. The subfolder 
+"meaningfuluse" contains the validation rules for the use of the CCR 
+within the Federal Regulations for Meaningful Use.
+
+You can add other subfolders to "org/astm/ccr/rules," if you wish to add 
+your own validation rules.  If you do not want the meaningful use rules 
+to be used, you can unzip the .WAR file and remove the org/astm/ccr/rules/meaningfuluse 
+folder.
+
+
+
+** MAY NEED TO CHANGE URL FOR XSL **
+The entry point is org.openhealthdata.validator.ValidatorServlet which is 
+tied to the context "/ValidationService"  Currently the location (URL) of the 
+XSL, which is used to render the resulting XML is inferred based on server IP, 
+PORT, and servlet context.  If your server is in a NAT'd environment, you may need 
+to change this behavior. There are instructions in the org.openhealthdata.validator.ValidatorServlet 
+source file.  A future release will have a property file that can be set to 
+override this behavior.
+
+** NEED TO ADD CCR XSD **
+The ASTM E2369-05 CCR XSD is copyrighted to ASTM.  You will need to add 
+your copy to org.openhealthdata.validation and name it CCRV1.xsd.  There 
+is a stub file there now.
+

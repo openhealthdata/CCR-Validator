@@ -1,0 +1,119 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.ProblemType;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.CodeType;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Problem type must be one of the required string values"
+@title (Problem type must be one of the required string values)
+@testid (de6dd1c9-0b25-4a0b-85c2-cc5c06031105)
+@description (Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.)
+@source (E2369-05 Table A1.1 Page 15)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$p: ProblemType( $ty:type )
+		CodedDescriptionType( this == $ty, $t:text not in ("Problem", "Condition", 
+			"Diagnosis", "Symptom", "Finding", "Complaint", "Functional Limitation") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Problem ["+$p.getCCRDataObjectID()+"] type ["+$t+"] is not a valid string value");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Problem description should be coded in either ICD-9, ICD9-CM, ICD-10, or SNOMED"
+@title (Problem description should be coded in either ICD9-CM, ICD-10, or SNOMED)
+@testid (f55b0a86-8b56-4468-8de3-0246fe186fe9)
+@description (Checks to see if Problem description has at least one code with a CodingSystem of either ICD9-CM, ICD-10, SNOMED, or SNOMED-CT)
+@source (E2369-05 Table A1.1 Page 15)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$p: ProblemType( $d:description )
+		CodedDescriptionType( this == $d, $c:code )
+		not (CodeType( codingSystem in ("ICD9", "ICD-9","ICD9CM","ICD-9CM","ICD9-CM", "ICD10","ICD-10", "SNOMED", "SNOMED-CT") ) from $c)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.PASSED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Problem ["+$p.getCCRDataObjectID()+"] does not appear to be coded in either ICD9, ICD-9, ICD9-CM, ICD10, ICD-10, SNOMED-CT, or SNOMED");
+		e.setServerity(ErrorType.WARN);
+		val_result.addError(testid, e);
+end
+
+rule "Problem status must be one of the required string values"
+@title (Problem <Status> must one of the required values)
+@testid (a5ccd350-9acf-123a-bc6a-62a7b0a9a3e0)
+@description (Text content of <Status> for Problem must be one of the defined structured text values: Active, Inactive, Chronic, Intermittent, Recurrent, Rule Out, Ruled Out, Resolved.)
+@source (E2369-05 Table A1.1 Page 15)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$p: ProblemType( $s:status )
+		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+			"Inactive", "Chronic", "Intermittent", "Recurrent", "Rule Out", "Ruled Out", "Resolved") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("A <Status><Text> of ["+$t+"] for Problem ["+$p.getCCRDataObjectID()+"] is not one of the required values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

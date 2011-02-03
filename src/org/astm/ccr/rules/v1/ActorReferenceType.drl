@@ -1,0 +1,99 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import org.astm.ccr.ActorType;
+import org.astm.ccr.ActorReferenceType;
+
+import java.util.List;
+import java.util.ArrayList;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+
+
+rule "ActorReference requires a valid ActorObjectID"
+@title (ActorReference requires a valid ActorObjectID)
+@testid (21d95ef3-7acb-48d5-8c3b-e438ba960cc7)
+@description (This test makes sure that every <ActorReference><ActorID> contains a value equal to an <Actor><ActorObjectID>)
+@source (E2369-05 Section A2.5.5.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		ActorReferenceType( $ref:actorID != null)
+		not (exists ActorType( $id:actorObjectID == $ref))
+		//ArrayList(size != 1) from collect (ActorType( $id:actorObjectID == $ref))
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("ActorReference with ActorID of ["+
+			$ref+"] does not equal any Actor's ActorObjectID");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "ActorReference should have an ActorRole"
+@title (ActorReference should have an ActorRole)
+@testid (f7b6f8ca-612e-440d-880b-82840f88b653)
+@description (This test checks for ActorReferences without at least one ActorRole, which is recommended for each use of ActorReference)
+@source (E2369-05 Section A2.5.5.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$a: ActorReferenceType($r:actorRole)
+		List(this == $r, size == 0)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("It is recommended that each use of <ActorReference> contain at least one "+
+		"<ActorRole>.  ActorReference with Actorid ["+$a.getActorID()+"] does not have an ActorRole.");
+		e.setServerity(ErrorType.WARN);
+		val_result.addError(testid, e);
+end
+
+
+
+
+

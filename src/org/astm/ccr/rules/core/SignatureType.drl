@@ -1,0 +1,58 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.SignatureType;
+import org.astm.ccr.IDType;
+
+
+#declare any global variables here
+
+
+rule "ccr SignatureType - ids"
+	when
+		$s:SignatureType($i:IDs)
+		List(this == $i, size >0)
+	then
+		for (IDType i : $s.getIDs()){
+			insert(i);
+		}
+end
+
+rule "ccr SignatureType - signature"
+	when
+		SignatureType($s:signature != null)
+	then
+		insert($s);
+end
+
+rule "ccr SignatureType - source"
+	when
+		SignatureType($s:source != null)
+	then
+		insert($s);
+end
+
+rule "ccr SignatureType - type"
+	when
+		SignatureType($t:type != null)
+	then
+		insert($t);
+end

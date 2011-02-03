@@ -1,0 +1,99 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.EncounterType;
+import org.astm.ccr.DurationType;
+import org.astm.ccr.Indications;
+import org.astm.ccr.Instructions;
+import org.astm.ccr.IntervalType;
+import org.astm.ccr.FrequencyType;
+import org.astm.ccr.Locations;
+import org.astm.ccr.Practitioners;
+
+#declare any global variables here
+
+
+rule "ccr EncounterType - consent"
+	when
+		EncounterType ($c:consent !=null)
+	then
+		insert($c);
+end
+
+rule "ccr EncounterType - duration"
+	when
+		$e: EncounterType() 
+	then
+		for(DurationType dt : $e.getDuration()){
+			insert(dt);
+		}
+end
+
+rule "ccr EncounterType - indications"
+	when
+		$e: EncounterType($i:indications)
+		List(this == $i, size >0)
+	then
+		for (Indications i : $e.getIndications()){
+			insert(i);
+		}
+end
+
+rule "ccr EncounterType - instructions"
+	when
+		EncounterType($i:instructions != null)
+	then
+		insert($i);
+end
+
+rule "ccr EncounterType - interval"
+	when
+		$e: EncounterType($i:interval)
+		List(this == $i, size >0)
+	then
+		for(IntervalType it : $e.getInterval()){
+			insert(it);
+		}
+end
+
+rule "ccr EncounterType - frequency"
+	when
+		$e: EncounterType($f:frequency)
+		List(this == $f, size >0)
+	then
+		for(FrequencyType ft : $e.getFrequency()){
+			insert(ft);
+		}
+end
+
+rule "ccr EncounterType - locations"
+	when
+		EncounterType($l: locations != null)
+	then
+		insert($l);
+end
+
+rule "ccr EncounterType = practitioners"
+	when
+		EncounterType($p: practitioners !=null)
+	then
+		insert($p);
+end

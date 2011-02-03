@@ -1,0 +1,122 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.InsuranceType;
+import org.astm.ccr.AuthorizationType;
+import org.astm.ccr.DateTimeType;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.IDType;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+
+rule "A Payer dateTime must be an exact datetime"
+@title (A Payer dateTime must be an exact datetime)
+@testid (473d728c-ccff-4c2f-9d49-59ee276d99cf)
+@description (A Payer dateTime must be an exact datetime.)
+@source (E2369-05 Table A1.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$i:InsuranceType($dates:dateTime)
+		DateTimeType(exactDateTime == null) from $dates
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Payer ["+$i.getCCRDataObjectID()+"] has a DateTime that is not using the ExactDateTime element");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Payer type must be a valid structured text value"
+@title (Payer type must be a valid structured text value)
+@testid (5f0c7eaa-89a1-4e38-bae5-8209392b1469)
+@description (Payer type must be one of the following values:  Self-Pay, Primary Health Insurance, Supplemental Health Insurance, Prescription, Drug Benefit, Mental Health Benefit, Long Term Care Benefit, Workers Compensation, Auto Insurance, Dental Insurance, Other.)
+@source (E2369-05 Table A1.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		InsuranceType($t:type)
+		CodedDescriptionType( this == $t, $tx:text not in ("Self-Pay", "Primary Health Insurance",
+			"Supplemental Health Insurance", "Prescription", "Drug Benefit", "Mental Health Benefit",
+			"Long Term Care Benefit", "Worker's Compensation", "Auto Insurance", "Dental Insurance", 
+			"Other") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Payer type ["+$tx+"] is not a valid value");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Payer IDs must have a type"
+@title (Payer IDs must have a type)
+@testid (5977dd58-e0ff-4aa9-ae22-f0919f6c4811)
+@description (Payer IDs must have a type)
+@source (E2369-05 Table A1.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$i:InsuranceType($ids:IDs)
+		IDType( type == null ) from $ids
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Payer ["+$i.getCCRDataObjectID()+"] has an IDs element without a <Type>");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

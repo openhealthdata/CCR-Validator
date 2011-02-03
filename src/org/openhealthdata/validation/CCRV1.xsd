@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:astm-org:CCR" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ccr="urn:astm-org:CCR" targetNamespace="urn:astm-org:CCR" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--E2369-05, Standard Specification for the Continuity of Care (CCR) - Final Version 1.0 (V1.0) November 7, 2005,  ASTM E31.28 CCR Subcommittee-->
+	<!--Copyright 2004-2005 ASTM, 100 Barr Harbor Drive, West Conshohocken, PA 19428-2959. All rights reserved.-->
+
+</xs:schema>

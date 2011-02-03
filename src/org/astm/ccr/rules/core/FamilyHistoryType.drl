@@ -1,0 +1,71 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.FamilyHistoryType;
+import org.astm.ccr.SourceType;
+import org.astm.ccr.InternalCCRLink;
+
+
+#declare any global variables here
+
+
+
+rule "ccr FamilyHistoryType - familymember"
+	when
+		$f: FamilyHistoryType($m:familyMember)
+		List(this == $m, size >0)
+	then
+		for (FamilyHistoryType.FamilyMember m : $f.getFamilyMember()){
+			if (m.getHealthStatus() != null){
+				insert(m.getHealthStatus());
+			}
+			for(SourceType s : m.getSource()){
+				insert(s);
+			}
+			for(InternalCCRLink i : m.getInternalCCRLink()){
+				insert(i);
+			}
+		}
+end
+
+rule "ccr Family HistoryType - problem"
+	when
+		$f: FamilyHistoryType($p: problem )
+		List(this == $p, size >0)
+	then
+		for(FamilyHistoryType.Problem p : $f.getProblem()){
+			if (p.getType() != null){
+				insert(p.getType());
+			}
+			if (p.getDescription() != null){
+				insert(p.getDescription());
+			}
+			if (p.getEpisodes() != null){
+				insert(p.getEpisodes());
+			}
+			for(SourceType s : p.getSource()){
+				insert(s);
+			}
+			for(InternalCCRLink i : p.getInternalCCRLink()){
+				insert(i);
+			}
+		}
+end

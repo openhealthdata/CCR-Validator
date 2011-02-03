@@ -1,0 +1,230 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import org.astm.ccr.ContinuityOfCareRecord.Body;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.CCRCodedDataObjectType;
+import org.astm.ccr.DateTimeType;
+
+import java.util.List;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+/*
+rule "AdvanceDirective type must one of required values"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		CCRCodedDataObjectType( $ty:type ) from $a
+		CodedDescriptionType( this == $ty, $t:text not in ("Resuscitation Status", "Intubation Status", 
+			"IV Fluid and Support Status", "CPR Status", "Antibiotic Status", 
+			"Life Support Status","Tube Feedings", "Other") )
+	then
+		String testid = "a5868350-949f-450a-bc6a-626710adace0";
+		val_result.addTest(testid, "AdvanceDirective <Type> must one of the required values",
+		"Text content of <Type> must be one of the defined structured text values: Resuscitation Status, "+
+		"Intubation Status, IV Fluid and Support Status, CPR Status, Antibiotic Status, "+
+		"Life Support Status, Tube Feedings, Other. (Source: E2369-05 Section A2.5.5.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("A <Type> of ["+$t+"] for an AdvancedDirective is not one of the required values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "AdvanceDirective type is required"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		$c: CCRCodedDataObjectType( $t:type == null ) from $a
+	then
+		String testid = "a54df650-949f-450a-bc6a-626710adace0";
+		val_result.addTest(testid, "AdvanceDirective <Type> is required for each <AdvanceDirective>",
+		"AdvanceDirective <Type> is required (Source: E2369-05 Section A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("AdvancedDirective ["+$c.getCCRDataObjectID()+"] does not contain a <Type> element");
+		val_result.addError(testid, e);
+end
+
+rule "AdvanceDirective description is required"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		$c: CCRCodedDataObjectType( $d:description == null ) from $a
+	then
+		String testid = "a54df650-949f-450a-bc6a-6264f0adace0";
+		val_result.addTest(testid, "AdvanceDirective <Description> is required for each <AdvanceDirective>",
+		"AdvanceDirective <Description> is required (Source: E2369-05 Section A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("AdvancedDirective ["+$c.getCCRDataObjectID()+"] does not contain a <Description> element");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "AdvanceDirective status is required"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		$c: CCRCodedDataObjectType( $s:status == null ) from $a
+	then
+		String testid = "a54df650-676f-450a-bc6a-6264f0adace0";
+		val_result.addTest(testid, "AdvanceDirective <Status> is required for each <AdvanceDirective>",
+		"AdvanceDirective <Status> is required (Source: E2369-05 Section A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("AdvancedDirective ["+$c.getCCRDataObjectID()+"] does not contain a <Status> element");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "An Advance Directive dateTime must be an exact datetime"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		$c:CCRCodedDataObjectType($dates:dateTime) from $a
+		DateTimeType(exactDateTime == null) from $dates
+	then
+		String testid = "d10d7f50-949f-390a-b36a-6dd710adace0";
+		val_result.addTest(testid, "An Advance Directive dateTime must be an exact datetime",
+		"AdvanceDirective datetime must have an <ExactDateTime> (Source: E2369-05 Section A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("AdvancedDirective ["+$c.getCCRDataObjectID()+"] has a "+
+			"<DateTime> that does not have an <ExactDateTime>");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+
+rule "AdvanceDirective example datetime type values"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		$c:CCRCodedDataObjectType($dates:dateTime) from $a
+		DateTimeType($ty:type) from $dates
+		CodedDescriptionType( this == $ty, $t:text not in ("Last Recorded", "Verified With Patient", 
+			"Verified With Parent", "Verified With Guardian", "Verified With Family", 
+			"Verified With Durable Power Of Attorney for Healthcare", "Verified With Treating Physician", 
+			"Start Date", "End Date") )
+			
+	then
+		String testid = "b27c67da-a4af-b2ba-9c6a-6a6a104dace0";
+		val_result.addTest(testid, "AdvanceDirective DateTime <Type> should be one of the recommended values",
+		"Text content of <DateTime><Type> is not a recommended defined structured text values: Last Recorded, Verified With Patient, "+ 
+			"Verified With Parent, Verified With Guardian, Verified With Family, "+ 
+			"Verified With Durable Power Of Attorney for Healthcare, Verified With Treating Physician,"+
+			"Start Date, End Date. (Source: E2369-05 Section Table A1.1)",
+		TestResultType.PASSED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("A <Type><Text> of ["+$t+"] for an AdvancedDirective <DateTime> is not one of the recommended values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "AdvanceDirective required status values"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		CCRCodedDataObjectType( $s:status ) from $a
+		CodedDescriptionType( this == $s, $t:text not in ("Current and Verified", "Supported By Healthcare Will",
+			"Supported By Durable Power of Attorney for Healthcare", "Verified With Family Only",
+			"Verified By Medical Record Only") )
+	then
+		String testid = "a5868350-949f-123a-bc6a-626710adace0";
+		val_result.addTest(testid, "AdvanceDirective <Status> must one of the required values",
+		"Text content of <Status> must be one of the defined structured text values: Current and Verified, "+
+		"Supported By Healthcare Will, Supported By Durable Power of Attorney for Healthcare, Verified With Family Only, "+
+		"Verified By Medical Record Only. (Source: E2369-05 Table A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("A <Status><Text> of ["+$t+"] for an AdvancedDirective is not one of the required values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+
+rule "AdvanceDirective required type values"
+@title ()
+@testid ()
+@description ()
+@source ()
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		Body($a:advanceDirectives)
+		CCRCodedDataObjectType( $ty:type ) from $a
+		CodedDescriptionType( this == $ty, $t:text not in ("Resuscitation Status", "Intubation Status", 
+			"IV Fluid and Support Status", "CPR Status", "Antibiotic Status", 
+			"Life Support Status","Tube Feedings", "Other") )
+	then
+		String testid = "abcd8350-949f-123a-bc6a-626710adace0";
+		val_result.addTest(testid, "AdvanceDirective <Type> text must one of the required values",
+		"Text content of <Type> must be one of the defined structured text values: Resuscitation Status, "+
+		"Intubation Status, IV Fluid and Support Status, CPR Status, Antibiotic Status, "+
+		"Life Support Status, Tube Feedings, Other. (Source: E2369-05 Table A1.1)",
+		TestResultType.FAILED, "E2369-05");
+		ErrorType e = new ErrorType();
+		e.setMessage("A <Type><Text> of ["+$t+"] for an AdvancedDirective is not one of the required values");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+*/

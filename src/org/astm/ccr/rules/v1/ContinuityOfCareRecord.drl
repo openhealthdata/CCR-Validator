@@ -1,0 +1,119 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import org.astm.ccr.ContinuityOfCareRecord;
+import org.astm.ccr.ContinuityOfCareRecord.Body;
+import org.astm.ccr.*;
+import java.util.List;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "CCR Version 1.0 must have of string V1.0 as Version"
+@title (CCR Version 1.0 must have of string V1.0 as Version)
+@testid (214b1ef3-2acb-92d5-8c3b-e438ba960cc7)
+@description (This test makes sure that there is a fixed string of 'V1.0' in <Version>.)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$c:ContinuityOfCareRecord($v:version != "V1.0")
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("CCR with Version of ["+
+			$v+"]  is invalid. (Many other tests will not be performed until fixed)");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "CCR must have an ExactDateTime"
+@title (CCR must have an ExactDateTime)
+@testid (215a5ef3-2acb-92d5-8c3b-e438ba960cc7)
+@description (This test makes sure that there is an <ExactDateTime> for the CCR DateTime and it must be have precision to seconds.)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$c:ContinuityOfCareRecord($d:dateTime)
+		DateTimeType(this == $d, exactDateTime not matches "([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?")
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("CCR with CCRDocumentObjectID of ["+
+			$c.getCCRDocumentObjectID()+"] does not contain an <ExactDateTime> for its <DateTime> in the correct format (yyyy-mm-ddThh:mm:ss.ss[Z or +-hh:mm])");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "CCR should not have any datetime children except ExactDateTime"
+@title (CCR should not have any datetime children except ExactDateTime)
+@testid (a45a56f3-23cb-92d5-8d3b-e438ba960cc7)
+@description (This test makes sure that there are no <Age>, <ApproximateDateTime>, or <DateTimeRange> children for the CCR DateTime.)
+@source (E2369-05 Section A1.1)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$c:ContinuityOfCareRecord($d:dateTime)
+		DateTimeType(this == $d && ($a:age != null || $ap:approximateDateTime != null) && $dt:dateTimeRange)
+		List(this == $dt, size >0)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("CCR with CCRDocumentObjectID of ["+
+			$c.getCCRDocumentObjectID()+"] should not contain children other than <ExactDateTime> for its <DateTime>");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

@@ -1,0 +1,116 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.Direction;
+import org.astm.ccr.CodedDescriptionType;
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+
+rule "Direction stopIndicator if present can only be the string 'Yes'"
+@title (Stop Indicator for a direction must be 'yes')
+@testid (5f3565b7-f3df-4bff-878a-54114d260f1c)
+@description (If a medication uses the <StopIndicator> the text value must be 'Yes')
+@source (E2369-05 Table A1.1 Page 24)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$d: Direction($s: stopIndicator)
+		CodedDescriptionType( this == $s, $t:text != "Yes" )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("String ["+$t+"] is not valid for StopIndictor");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'"
+@title (Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN')
+@testid (5f3565b7-f3df-4bff-878a-54114d260f1c)
+@description (Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'.)
+@source (E2369-05 Table A1.1 Page 24)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$d: Direction($m: multipleDirectionModifier)
+		CodedDescriptionType( this == $m, $t:text not in ("AND", "OR", "THEN") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("String ["+$t+"] is not valid for MultipleDirectionModifier");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Direction when multiple direction modifier is 'THEN' there should be direction sequence position"
+@title (Direction when multiple direction modifier is 'THEN' there should be direction sequence position)
+@testid (274ce240-ed8b-40ae-8658-fb17a11d9d3b)
+@description (Direction when multiple direction modifier is 'THEN' there should be direction sequence position.)
+@source (E2369-05 Table A1.1 Page 24)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$d: Direction($m: multipleDirectionModifier)
+		CodedDescriptionType( this == $m, $t:text == "THEN" )
+		Direction (this == $d, directionSequencePosition == null)
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Direction with a 'THEN' multiple direction modifier does not contain a DirectionSequencePosition element");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

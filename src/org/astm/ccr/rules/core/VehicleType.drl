@@ -1,0 +1,120 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.VehicleType;
+import org.astm.ccr.IDType;
+import org.astm.ccr.InternalCCRLink;
+
+
+
+#declare any global variables here
+
+
+rule "ccr VehicleType - description"
+	when
+		VehicleType($d:description != null)
+	then
+		insert($d);
+end
+
+rule "ccr VehicleType - ids"
+	when
+		VehicleType($i:IDs != null)
+	then
+		insert($i);
+end
+
+rule "ccr VehicleType - internalccrlink"
+	when
+		VehicleType($i:internalCCRLink != null)
+	then
+		insert($i);
+end
+
+rule "ccr VehicleType - manufacturer"
+	when
+		VehicleType($m:manufacturer != null)
+	then
+		insert($m);
+end
+
+rule "ccr VehicleType - multipleVehicleModifier"
+	when
+		VehicleType($m:multipleVehicleModifier != null)
+	then
+		insert($m);
+end
+
+rule "ccr VehicleType - product"
+	when
+		$v:VehicleType($p:product)
+		List(this == $p, size >0)
+	then
+		for(VehicleType.Product p : $v.getProduct()){
+			if(p.getProductName() != null){
+				insert(p.getProductName());
+			}
+			if(p.getBrandName() != null){
+				insert(p.getBrandName());
+			}
+			
+			if(p.getMultipleProductModifier() != null){
+				insert(p.getMultipleProductModifier());
+			}
+			for(VehicleType.Product.Strength s : p.getStrength()){
+				insert(s);
+				if (s.getVariableStrengthModifier() != null){
+					insert(s.getVariableStrengthModifier());
+				}
+			}
+			for(VehicleType.Product.Size s : p.getSize()){
+				insert(s);
+				if(s.getVariableSizeModifier() != null){
+					insert(s.getVariableSizeModifier());
+				}
+			}
+			for (VehicleType.Product.Form f : p.getForm()){
+				insert(f);
+				if (f.getMultipleFormModifier() != null){
+					insert(f.getMultipleFormModifier());
+				}
+			}
+			for (VehicleType.Product.Concentration c : p.getConcentration()){
+				insert(c);
+				if (c.getVariableConcentrationModifier() != null){
+					insert(c.getVariableConcentrationModifier());
+				}
+			}
+		}
+end
+
+rule "ccr VehicleType - quantity"
+	when
+		$v:VehicleType($q:quantity)
+		List(this == $q, size >0)
+	then
+		for(VehicleType.Quantity q : $v.getQuantity()){
+			insert(q);
+			if(q.getVariableQuantityModifier() != null){
+				insert(q.getVariableQuantityModifier());
+			}
+		}
+end

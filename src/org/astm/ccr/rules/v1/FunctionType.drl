@@ -1,0 +1,118 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+
+import java.util.List;
+import org.astm.ccr.FunctionType;
+import org.astm.ccr.CodedDescriptionType;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Functional status type must be one of the required strings"
+@title (Functional status type must be one of the required strings)
+@testid (94103750-4b28-4324-be90-65d00f9b80d1)
+@description (Functional status type must be one of the required strings: Ambulatory Status, Mental Status, Activities of Daily Living, Home/Living Situation, Ability to Care for Self.)
+@source (E2369-05 Table A1.1 Page 14)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$f: FunctionType($ty:type)
+		CodedDescriptionType( this == $ty, $t:text not in ("Ambulatory Status", 
+			"Mental Status", "Activities of Daily Living", "Home/Living Situation", 
+			"Ability to Care for Self") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("String ["+$t+"] is not valid for <Type> in functional status");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Functional status description can only be used without a problem or test"
+@title (Functional status description can only be used without a problem or test)
+@testid (8075fd7b-4676-4330-835c-a15d8c0e947e)
+@description (Functional status description can only be used without a problem or test)
+@source (E2369-05 Table A1.1 Page 14)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$f: FunctionType(description != null, $p:problem, $t:test)
+		(List(this == $p, size > 0) || List(this == $t, size >0))
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("Functional status <Description> was found when a <Problem> or <Test> was present");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end
+
+rule "Functional status status must be one of the required strings"
+@title (Functional status status must be one of the required strings)
+@testid (f16db596-5f5e-43bd-97cc-3cf278896a04)
+@description (Functional status type must be one of the required strings: Active, Chronic, Temporary, Resolved.)
+@source (E2369-05 Table A1.1 Page 14)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		$f: FunctionType($s:status)
+		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+			"Chronic", "Temporary", "Resolved") )
+	then
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+		ErrorType e = new ErrorType();
+		e.setMessage("String ["+$t+"] is not valid for <Status> in functional status");
+		e.setServerity(ErrorType.FATAL);
+		val_result.addError(testid, e);
+end

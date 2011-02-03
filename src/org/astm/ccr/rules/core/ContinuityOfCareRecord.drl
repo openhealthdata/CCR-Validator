@@ -1,0 +1,285 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import org.astm.ccr.ContinuityOfCareRecord;
+import org.astm.ccr.ContinuityOfCareRecord.Body;
+import org.astm.ccr.*;
+import org.astm.ccr.extension.*;
+import java.util.List;
+
+
+#declare any global variables here
+
+
+rule "ccr language"
+	when
+		$ccr : ContinuityOfCareRecord(version == "V1.0", $l:language != null)
+	then
+		insert($l);
+end
+
+rule "ccr datetime"
+	when
+		$ccr : ContinuityOfCareRecord(version == "V1.0", $d:dateTime != null)
+	then
+		insert($d);
+end
+
+rule "ccr patient"
+	when
+		$ccr : ContinuityOfCareRecord(version == "V1.0")
+	then
+		for (ContinuityOfCareRecord.Patient p : $ccr.getPatient()){
+			insert(p);
+		}
+end
+
+rule "ccr from"
+	when
+		//Cannot check "from" as it is a keyword in drl
+		$ccr : ContinuityOfCareRecord(version == "V1.0")
+	then
+		if ($ccr.getFrom() != null){
+			for (ActorReferenceType art : $ccr.getFrom().getActorLink()){
+				insert(art);
+			}
+		}
+end
+
+rule "ccr to"
+	when
+		$ccr : ContinuityOfCareRecord(version == "V1.0", $t:to != null)
+	then
+		for (ActorReferenceType art : $t.getActorLink()){
+			insert(art);
+		}
+end
+
+rule "ccr purpose"
+	when
+		$ccr : ContinuityOfCareRecord(version == "V1.0", $p:purpose)
+		List (this == $p, size > 0)
+	then
+		for (PurposeType pt : $ccr.getPurpose()){
+			insert(pt);
+		}
+end
+
+rule "ccr Body"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0", $b:body != null)
+	then
+		insert($b);
+end
+
+rule "ccr Comments"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0", $c:comments != null)
+	then
+		insert($c);
+end
+
+rule "ccr References"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0", $r:references != null)
+	then
+		insert($r);
+end
+
+rule "ccr Signatures"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0", $s:signatures != null)
+	then
+		insert($s);
+end
+
+rule "ccr Body - AdvanceDirectives"
+	when
+		Body($a:advanceDirectives != null)
+	then
+		for (CCRCodedDataObjectType cdt : $a.getAdvanceDirective()){
+			insert(cdt);
+		}
+end
+
+rule "ccr Body - Payers"
+	when
+		Body($p:payers != null)
+	then
+		for (InsuranceType it : $p.getPayer()){
+			insert(it);
+		}
+end
+
+rule "ccr Body - Alert"
+	when
+		Body($a:alerts != null)
+	then
+		for (AlertType at : $a.getAlert()){
+			insert(at);
+		}
+end
+
+rule "ccr Body - Encounters"
+	when
+		Body($e:encounters != null)
+	then
+		for (EncounterType et : $e.getEncounter()){
+			insert(et);
+		}
+end
+
+rule "ccr Body - FamilyHistory"
+	when
+		Body($f:familyHistory != null)
+	then
+		for (FamilyHistoryType fht: $f.getFamilyProblemHistory()){
+			insert(fht);
+		}
+end
+
+rule "ccr Body - FunctionalStatus"
+	when
+		Body($f:functionalStatus != null)
+	then
+		for (FunctionType ft : $f.getFunction()){
+			insert(ft);
+		}
+end
+
+rule "ccr Body - HealthCareProviders"
+	when
+		Body($h:healthCareProviders != null)
+	then
+		for (ActorReferenceType art : $h.getProvider()){
+			insert(art);
+		}
+end
+
+rule "ccr Body - Immunizations"
+	when
+		Body($i:immunizations != null)
+	then
+		Immunizations i = new Immunizations();
+		for (StructuredProductType spt : $i.getImmunization()){
+			i.getImmunization().add(spt);
+			insert(spt);
+		}
+		insert(i);
+end
+
+rule "ccr Body - MedicalEquipment"
+	when
+		Body($m:medicalEquipment != null)
+	then
+		for (StructuredProductType spt : $m.getEquipment()){
+			insert(spt);
+		}
+end
+
+rule "ccr Body - Medications"
+	when
+		Body($m:medications != null)
+	then
+		Medications m = new Medications();
+		for (StructuredProductType spt : $m.getMedication()){
+			m.getMedication().add(spt);
+			insert(spt);
+		}
+		insert(m);
+end
+
+rule "ccr Body - PlanOfCare"
+	when
+		Body($p:planOfCare != null)
+	then
+		for (PlanType pt : $p.getPlan()){
+			insert(pt);
+		}
+end
+
+rule "ccr Body - Problems"
+	when
+		Body($p:problems != null)
+	then
+		for (ProblemType pt : $p.getProblem()){
+			insert(pt);
+		}
+end
+
+rule "ccr Body - Procedures"
+	when
+		Body($p:procedures != null)
+	then
+		for (ProcedureType pt : $p.getProcedure()){
+			insert(pt);
+		}
+end
+
+rule "ccr Body - Results"
+	when
+		Body($r:results != null)
+	then
+		Results rs = new Results();
+		for (ResultType rt : $r.getResult()){
+			rs.getResult().add(rt);
+			insert(rt);
+		}
+		insert(rs);
+end
+
+rule "ccr Body - SocialHistory"
+	when
+		Body($s: socialHistory != null)
+	then
+		for (SocialHistoryType sht : $s.getSocialHistoryElement()){
+			insert(sht);
+		}
+end
+
+rule "ccr Body - Support"
+	when
+		Body($s : support != null)
+	then
+		for (ActorReferenceType art : $s.getSupportProvider()){
+			insert(art);
+		}
+end
+
+rule "ccr Body - VitalSigns"
+	when
+		Body($v : vitalSigns != null)
+	then
+		VitalSigns vs = new VitalSigns();
+		for (ResultType rt : $v.getResult()){
+			vs.getResult().add(rt);
+			insert(rt);
+		}
+		insert(vs);
+end
+
+rule "ccr Actors - Actor"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0", $a:actors != null)
+	then
+		for(ActorType at : $a.getActor()){
+			insert(at);
+		}
+end

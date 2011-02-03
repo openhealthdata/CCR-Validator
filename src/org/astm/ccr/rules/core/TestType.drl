@@ -1,0 +1,81 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.TestType;
+import org.astm.ccr.Agent;
+import org.astm.ccr.CodedDescriptionType;
+import org.astm.ccr.NormalType;
+
+#declare any global variables here
+
+
+rule "ccr TestType - testresult"
+	when
+		$test : TestType(testResult != null)
+	then
+		insert ($test.getTestResult());
+end
+
+rule "ccr TestType - agent"
+	when
+		$t: TestType($a:agent)
+		List(this == $a, size >0)
+	then
+		for (Agent a : $t.getAgent()){
+			insert(a);
+		}
+end
+
+rule "ccr TestType - confidencevalue"
+	when
+		$t: TestType($c:confidenceValue != null)
+	then
+		insert($c);
+end
+
+rule "ccr TestType - flag"
+	when
+		$t: TestType($f:flag)
+		List(this == $f, size >0)
+	then
+		for (CodedDescriptionType c : $t.getFlag()){
+			insert(c);
+		}
+end
+
+rule "ccr TestType - method"
+	when
+		$t: TestType($m:method)
+		List(this == $m, size >0)
+	then
+		for(CodedDescriptionType c : $t.getMethod()){
+			insert(c);
+		}
+end
+
+rule "ccr TestType - normalresult"
+	when
+		$t: TestType($n:normalResult)
+	then
+		for(NormalType n : $t.getNormalResult().getNormal()){
+			insert(n);
+		}
+end

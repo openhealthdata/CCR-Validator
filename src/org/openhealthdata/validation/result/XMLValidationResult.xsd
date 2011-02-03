@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://openhealthdata.org/XML/ValidationResult"
+            xmlns:tns="http://openhealthdata.org/XML/ValidationResult"
+            elementFormDefault="qualified">
+   <xsd:element name="ValidationResult">
+     <xsd:complexType>
+       <xsd:complexContent>
+         <xsd:restriction base="xsd:anyType">
+           <xsd:sequence>
+           	<xsd:element name="Disclaimer" type="xsd:string"
+           		minOccurs="0" />
+           	<xsd:element name="Timestamp" type="xsd:dateTime" />
+           	<xsd:element name="Tester">
+           		<xsd:complexType>
+           			<xsd:sequence>
+           				<xsd:element name="Individual" minOccurs="0"
+           					maxOccurs="unbounded" type="xsd:string" />
+           				<xsd:element name="Organization"
+           					minOccurs="0" maxOccurs="unbounded" type="xsd:string" />
+           				<xsd:element name="InformationSystem"
+           					minOccurs="0" maxOccurs="unbounded" type="xsd:string" />
+           			</xsd:sequence>
+           		</xsd:complexType>
+           	</xsd:element>
+           	<xsd:element name="FileTested" type="xsd:string"></xsd:element>
+           	<xsd:element name="ValidationUsed">
+           		<xsd:complexType>
+           			<xsd:complexContent>
+           				<xsd:restriction base="xsd:anyType">
+           					<xsd:sequence>
+           						<xsd:element name="Schema">
+           							<xsd:complexType>
+           								<xsd:sequence>
+           									<xsd:element name="Name"
+           										type="xsd:string" />
+           									<xsd:element
+           										name="Version" type="xsd:string" minOccurs="0" />
+           								</xsd:sequence>
+           							</xsd:complexType>
+           						</xsd:element>
+           						<xsd:element name="Profile"
+           							maxOccurs="unbounded" minOccurs="0">
+           							<xsd:complexType>
+           								<xsd:sequence>
+           									<xsd:element name="Name"
+           										type="xsd:string" />
+           									<xsd:element
+           										name="Version" type="xsd:string" minOccurs="0" />
+           								</xsd:sequence>
+           								<xsd:attribute name="id"
+           									type="xsd:ID" />
+           							</xsd:complexType>
+           						</xsd:element>
+           					</xsd:sequence>
+           				</xsd:restriction>
+           			</xsd:complexContent>
+           		</xsd:complexType>
+           	</xsd:element>
+           	<xsd:element name="TestResult" type="tns:TestResultType"
+           		maxOccurs="unbounded" />
+
+           	<xsd:element name="Rules" minOccurs="0">
+           	  <xsd:complexType>
+           	    <xsd:sequence>
+           	      <xsd:element name="Rule" type="tns:RuleType" maxOccurs="unbounded"/>
+           	    </xsd:sequence>
+           	  </xsd:complexType>
+           	</xsd:element>
+           </xsd:sequence>
+           <xsd:attribute name="status" type="xsd:string" use="required"/>
+         </xsd:restriction>
+       </xsd:complexContent>
+     </xsd:complexType>
+   </xsd:element>
+        <xsd:complexType name="ErrorType">
+     <xsd:complexContent>
+       <xsd:restriction base="xsd:anyType">
+         <xsd:sequence>
+           <xsd:choice>
+             <xsd:element name="InFileLocation" minOccurs="0" type="tns:InFileLocation"></xsd:element>
+             <xsd:element name="XPathLocation" type="xsd:string" minOccurs="0"/>
+             <xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+           </xsd:choice>
+           <xsd:element name="Message" type="xsd:string"/>
+         </xsd:sequence>
+         <xsd:attribute name="serverity" use="required">
+           <xsd:simpleType>
+             <xsd:restriction base="xsd:string">
+               <xsd:enumeration value="info"/>
+               <xsd:enumeration value="warn"/>
+               <xsd:enumeration value="fatal"/>
+             </xsd:restriction>
+           </xsd:simpleType>
+         </xsd:attribute>
+       </xsd:restriction>
+     </xsd:complexContent>
+   </xsd:complexType>
+        <xsd:complexType name="InFileLocation">
+         <xsd:complexContent>
+           <xsd:restriction base="xsd:anyType">
+             <xsd:sequence>
+               <xsd:element name="LineNumber" type="xsd:int"/>
+               <xsd:element name="ColumnNumber" type="xsd:int"/>
+             </xsd:sequence>
+           </xsd:restriction>
+         </xsd:complexContent>
+       </xsd:complexType>
+        <xsd:complexType name="TestResultType">
+     <xsd:complexContent>
+       <xsd:restriction base="xsd:anyType">
+         <xsd:sequence>
+           <xsd:element name="TestDescription" minOccurs="0">
+             <xsd:complexType>
+               <xsd:sequence>
+                 <xsd:element name="Name" type="xsd:string"/>
+                 <xsd:element name="Description" type="xsd:string"/>
+                 <xsd:element name="Source" type="xsd:string"/>
+               </xsd:sequence>
+               <xsd:attribute name="profile" type="xsd:IDREFS"/>
+             </xsd:complexType>
+           </xsd:element>
+           <xsd:element name="InfoURL" type="xsd:string" minOccurs="0"/>
+           <xsd:element name="Error" type="tns:ErrorType" maxOccurs="unbounded" minOccurs="0"/>
+         </xsd:sequence>
+         <xsd:attribute name="uid" use="required" type="xsd:string" />
+         <xsd:attribute name="status" use="required">
+           <xsd:simpleType>
+             <xsd:restriction base="xsd:string">
+               <xsd:enumeration value="passed"/>
+               <xsd:enumeration value="failed"/>
+               <xsd:enumeration value="missing"/>
+             </xsd:restriction>
+           </xsd:simpleType>
+         </xsd:attribute>
+       </xsd:restriction>
+     </xsd:complexContent>
+   </xsd:complexType>
+
+        <xsd:complexType name="RuleType">
+        	<xsd:sequence>
+        		<xsd:element name="Package" type="xsd:string"/>
+        		<xsd:element name="Name" type="xsd:string"/>
+                <xsd:element name="Profile" type="xsd:string"/>
+        	    <xsd:element name="Title" type="xsd:string"/>
+        	    <xsd:element name="Description" type="xsd:string"/>
+        	    <xsd:element name="Source" type="xsd:string"/>
+        	    <xsd:element name="Author" type="xsd:string"/>
+        	</xsd:sequence>
+        	<xsd:attribute name="status" type="xsd:string"/>
+                <xsd:attribute name="id" type="xsd:string"/>
+        </xsd:complexType>
+</xsd:schema>

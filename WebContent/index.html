@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Open Health Data CCR Validation Service</title>
+</head>
+<body>
+<h2>Welcome to the Open Health Data CCR Validation Service</h2>
+<p>
+	This validation service is still experimental.  It will test your ASTM E-2369-05 CCR XML
+	instance against the standard XML Schema Document (XSD).  If it passes, it will 
+	perform a series of tests based on constraints laid out in the E-2369-05 implementation 
+	guide.  
+</p>
+<p>
+	This validation service will also check the CCR instance against the constraints laid
+	out in Meaningful Use.  This is the profile called RIN 0991-AB58.
+</p>
+<p>
+	A list of all evaluated rules is at the bottom of the result.
+</p>
+<p>
+	The validation service is setup using an open source rules engine and therefore, 
+	additional validation tests can be added as "additional profiles" that are required 
+	or optional (i.e. overall validation passes if errors during profile tests).
+</p>
+<p>
+	Any bugs or questions can be entered on the <a href="http://sourceforge.net/projects/ccrvalidator/">project page</a>.
+</p>
+<p>
+	Remember the CCR and Implementation Guide are Copyrighted by ASTM.
+</p>
+<p><font color="red">
+	By submitting your CCR instance for validation, you are giving the right for us to reuse
+	the XML in whole or part to construct a testsuite for the CCR standard.
+	<b>Do Not Upload CCRs with Protected Health Information;</b> this is only for testing purposes
+</font></p>
+<FORM METHOD=POST ENCTYPE="multipart/form-data" ACTION="./ValidatorServlet">
+	File to upload: <INPUT TYPE=FILE NAME="upfile"/><BR/>
+	<INPUT TYPE=SUBMIT VALUE="Submit"/>
+</FORM>
+<p>
+	Result will be in the form of an XML file which will be rendered in HTML.
+</p>
+</body>
+</html>

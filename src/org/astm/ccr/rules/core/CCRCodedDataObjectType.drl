@@ -1,0 +1,113 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#created on: Apr 29, 2008
+package org.astm.ccr.rules.core
+
+#list any import classes here.
+import java.util.List;
+import org.astm.ccr.CCRCodedDataObjectType;
+import org.astm.ccr.DateTimeType;
+import org.astm.ccr.InternalCCRLink;
+import org.astm.ccr.IDType
+import org.astm.ccr.SourceType;
+
+
+#declare any global variables here
+
+
+
+
+rule "ccr CCRCodedDataObjectType - DateTime"
+	
+	when
+		$c : CCRCodedDataObjectType($d:dateTime)
+		List(this == $d, size >0)
+	then 
+		for (DateTimeType dt : $c.getDateTime()){
+			insert(dt);
+		}
+end
+
+rule "ccr CCRCodedDataObjectType - description"
+	
+	when
+		$c : CCRCodedDataObjectType($d:description != null)
+	then 
+		insert($d);
+end
+
+rule "ccr CCRCodedDataObjectType - internalccrlink "
+	
+	when
+		$c : CCRCodedDataObjectType($i : internalCCRLink)
+		List(this == $i, size >0)
+	then 
+		for (InternalCCRLink lk : $c.getInternalCCRLink()){
+			insert(lk);
+		}
+end
+
+rule "ccr CCRCodedDataObjectType - ids"
+	
+	when
+		$c : CCRCodedDataObjectType($i:IDs)
+		List(this == $i, size >0)
+	then 
+		for ( IDType i : $c.getIDs()){
+			insert(i);
+		}
+end
+
+/*
+rule "ccr CCRCodedDataObjectType - signature"
+	
+	when
+		$c : CCRCodedDataObjectType($s:signature)
+		List(this == $s, size >0)
+	then 
+		for ( Signature s : $c.getSignature()){
+			insert(s);
+		}
+end
+*/
+
+rule "ccr CCRCodedDataObjectType - source"
+	
+	when
+		$c : CCRCodedDataObjectType($s:source)
+		List(this == $s, size >0)
+	then 
+		for ( SourceType st : $c.getSource()){
+			insert(st);
+		}
+end
+
+rule "ccr CCRCodedDataObjectType - status"
+	
+	when
+		CCRCodedDataObjectType($s:status != null)
+	then 
+		insert($s);
+end
+
+rule "ccr CCRCodedDataObjectType - type"
+	
+	when
+		$c : CCRCodedDataObjectType($t:type != null)
+	then 
+		insert($t);
+end

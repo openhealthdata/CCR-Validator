@@ -1,0 +1,137 @@
+/*
+ * Copyright 2010 OpenHealthData, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ #created on: Apr 29, 2008
+package org.astm.ccr.rules.v1
+
+#list any import classes here.
+import org.openhealthdata.validation.result.ValidationResultManager;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ErrorType;
+import org.openhealthdata.validation.CCRV1SchemaValidator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import org.astm.ccr.ActorType;
+import org.astm.ccr.ActorReferenceType;
+
+import java.util.List;
+import java.io.InputStream;
+import java.io.File;
+
+
+#declare any global variables here
+global ValidationResultManager val_result;
+
+rule "Check for Schema Errors - DOM"
+@title (CCR Instance must validate against the CCR XSD)
+@testid (b785737b-b024-4e91-a39f-0da14411cf45)
+@description (This test makes sure a CCR instance validates against the CCR XML Schema and only if its passes this validation will additional tests be evaluated.)
+@source (E2369-05)
+@profile (E2369-05)
+@author (openhealthdata)
+	when
+		// TODO Make the LHS more specific for deployment
+		// 		in multi-standard rulebases
+		$c: CCRV1SchemaValidator()
+		$d:Document()
+	then
+		//System.out.println("Checking for Schema Errors");
+		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
+		if($c.isValid($d)){
+			insert($c.getValidRootObject());
+		}else{
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+			val_result.addError(testid, $c.getErrors());
+		}
+end
+
+rule "Check for Schema Errors - InputStream"
+@title ("CCR Instance must validate against the CCR XSD")
+@testid ("b785737b-b024-4e91-a39f-0da14411cf45")
+@description ("This test makes sure a CCR instance validates against the CCR XML Schema and only if its passes this validation will additional tests be evaluated.")
+@source ("")
+@profile ("")
+@author ("openhealthdata")
+	when
+		// TODO Make the LHS more specific for deployment
+		// 		in multi-standard rulebases
+		$c: CCRV1SchemaValidator()
+		$is:InputStream()
+	then
+		//System.out.println("Checking for Schema Errors");
+		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
+		if($c.isValid($is)){
+			insert($c.getValidRootObject());
+		}else{
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+			val_result.addError(testid, $c.getErrors());
+		}
+end
+
+rule "Check for Schema Errors - File"
+@title ("CCR Instance must validate against the CCR XSD")
+@testid ("b785737b-b024-4e91-a39f-0da14411cf45")
+@description ("This test makes sure a CCR instance validates against the CCR XML Schema and only if its passes this validation will additional tests be evaluated.")
+@source ("")
+@profile ("")
+@author ("openhealthdata")
+	when
+		// TODO Make the LHS more specific for deployment
+		// 		in multi-standard rulebases
+		$c: CCRV1SchemaValidator()
+		$is:File()
+	then
+		//System.out.println("Checking for Schema Errors");
+		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
+		val_result.setFileTested($is.getName());
+		if($c.isValid($is)){
+			insert($c.getValidRootObject());
+		}else{
+		String testid = drools.getRule().getMetaAttribute("testid");
+		String title = drools.getRule().getMetaAttribute("title");
+		String description = drools.getRule().getMetaAttribute("description");
+		String source = drools.getRule().getMetaAttribute("source");
+		String profile = drools.getRule().getMetaAttribute("profile"); 
+		val_result.addTest(
+			testid,
+			title,
+			description+ " Source: "+
+			source,
+			TestResultType.FAILED, profile);
+			val_result.addError(testid, $c.getErrors());
+		}
+end
