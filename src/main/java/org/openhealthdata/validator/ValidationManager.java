@@ -184,7 +184,7 @@ public class ValidationManager {
 		// Create knowledgebase if not setup yet
 		if (this.knowledgeBase == null) {
 			try {
-				createKnowledgeBase("org/astm/ccr/rules");
+				createKnowledgeBase("/rules");
 			} catch (URISyntaxException e) {
 				logger.log(Level.SEVERE, "Malformed URI when creating knowledge base", e);
 				e.printStackTrace();
