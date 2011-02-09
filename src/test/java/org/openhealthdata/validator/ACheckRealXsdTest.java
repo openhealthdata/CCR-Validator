@@ -29,7 +29,14 @@ public class ACheckRealXsdTest {
             xsdFile.close();
         }
 
-        Assert.assertTrue("Dummy file found, replace CCRV1.xsd with your own licensed version", dummyContent.equals(writer.toString()));
+        String xsdContent = writer.toString();
+        if ("\r\n".equals(System.getProperty("line.separator"))) {
+          xsdContent = xsdContent.replaceAll("\r[^\n]", System.getProperty("line.separator"));
+        } else {
+          xsdContent = xsdContent.replaceAll("\r\n", System.getProperty("line.separator"));
+        }
+
+        Assert.assertFalse("Dummy file found, replace CCRV1.xsd with your own licensed version", dummyContent.equals(xsdContent));
 
     }
 
@@ -38,5 +45,5 @@ public class ACheckRealXsdTest {
             "\t<!--E2369-05, Standard Specification for the Continuity of Care (CCR) - Final Version 1.0 (V1.0) November 7, 2005,  ASTM E31.28 CCR Subcommittee-->\n" +
             "\t<!--Copyright 2004-2005 ASTM, 100 Barr Harbor Drive, West Conshohocken, PA 19428-2959. All rights reserved.-->\n" +
             "\n" +
-            "</xs:schema>";
+            "</xs:schema>\n";
 }
