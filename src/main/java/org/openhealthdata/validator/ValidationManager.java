@@ -87,7 +87,7 @@ public class ValidationManager {
 		KnowledgeBuilder builder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder();
 		// Get the location of the root rules folder from the classpath
-		URL rules = this.getClass().getClassLoader().getResource(rulesFolder);
+		URL rules = this.getClass().getResource(rulesFolder);
 		// Get file handler from the URL
 		File rDir = new File(rules.toURI());
 		// Make sure it is a directory and load all subfolders

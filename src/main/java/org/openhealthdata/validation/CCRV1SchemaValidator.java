@@ -94,7 +94,7 @@ public class CCRV1SchemaValidator extends SchemaValidator {
 		// create Validator
 		// create a SchemaFactory capable of understanding WXS schemas
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	    URL xsdURL = this.getClass().getClassLoader().getResource("/CCRV1.xsd");
+	    URL xsdURL = this.getClass().getResource("/CCRV1.xsd");
 	    File xsdFile = null;
 		try {
 			xsdFile = new File(xsdURL.toURI());
