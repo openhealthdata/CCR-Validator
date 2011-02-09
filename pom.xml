@@ -35,36 +35,7 @@
           <scanIntervalSeconds>10</scanIntervalSeconds>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <configuration>
-              <target>
-                  <mkdir dir="${generated-resources.directory}"/>
-                  <get src="http://www.apache.org/dist/ant/KEYS"
-                    dest="${generated-resources.directory}"
-                    verbose="true"
-                    usetimestamp="true"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>${generated-resources.directory}</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-    </resources>
     <finalName>ccrvalidator</finalName>
   </build>
 
@@ -78,6 +49,5 @@
 
   <properties>
     <drools.version>5.0.1</drools.version>
-    <generated-resources.directory>${project.build.directory}/generated-resources/</generated-resources.directory>
   </properties>
 </project>
