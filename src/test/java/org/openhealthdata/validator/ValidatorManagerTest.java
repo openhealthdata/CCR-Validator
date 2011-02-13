@@ -3,8 +3,12 @@ package org.openhealthdata.validator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openhealthdata.validation.result.TestResultType;
+import org.openhealthdata.validation.result.ValidationResult;
+import org.openhealthdata.validation.result.ValidationResultComparator;
 
 import java.io.*;
+import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,35 +20,20 @@ import java.io.*;
 public class ValidatorManagerTest {
 
     @Test
-    @Ignore
     public void validateTest() throws IOException{
         ValidationManager validationManager = new ValidationManager();
-        String result = validationManager.validateToString(fileFromInputStream(getClass().getResourceAsStream("/ccr_sample.xml")));
-        String expected = expectedResultAsString(getClass().getResourceAsStream("/expectedResult.xml"));
-        Assert.assertEquals(expected, result);
+        ValidationResult vr = validationManager.validate(fileFromInputStream(getClass().getResourceAsStream("/ccr_sample.xml")));
+        Assert.assertTrue(ValidationResultComparator.compare(vr, createExpectedResult(), true));
     }
-
-    private String expectedResultAsString(InputStream expectedStream) throws IOException {
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-        try {
-            Reader reader = new BufferedReader(
-                    new InputStreamReader(expectedStream, "UTF-8"));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
-            }
-        } finally {
-            expectedStream.close();
-        }
-
-        String expectedContent = writer.toString();
-        if ("\r\n".equals(System.getProperty("line.separator"))) {
-          expectedContent = expectedContent.replaceAll("\r[^\n]", System.getProperty("line.separator"));
-        } else {
-          expectedContent = expectedContent.replaceAll("\r\n", System.getProperty("line.separator"));
-        }
-        return expectedContent;
+    
+    private HashMap<String, String> createExpectedResult(){
+    	HashMap<String, String> res = new HashMap<String, String>();
+    	res.put("255b550a-4c64-4890-ae1a-e264fb2bd895", TestResultType.PASSED);
+    	res.put("f55b0a86-8b56-4468-8de3-0246fe186fe9", TestResultType.PASSED);
+    	res.put("f55b0a86-8b56-4468-8de3-0246fe186fa6", TestResultType.FAILED);
+    	res.put("f9fdf3f6-5c66-4e9f-ba2c-d57fbe294567", TestResultType.PASSED);
+    	res.put("cceef309-dac4-402a-923c-699e53e65ae9", TestResultType.PASSED);
+    	return res;
     }
 
     private File fileFromInputStream(InputStream is) throws IOException{
