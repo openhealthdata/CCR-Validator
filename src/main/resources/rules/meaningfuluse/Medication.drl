@@ -33,12 +33,12 @@ global ValidationResultManager val_result;
 
 
 rule "Medication product code should be encoded in RXNORM or NDC"
-@title (Medication product code MUST be encoded in RXNORM)
-@testid (8bf19d27-5b71-4786-8330-85c7469ec111)
-@description (This test checks for at least one code with a coding system of either RxNorm or NDC. Criteria is any code set by an RxNorm drug data source provider that is identified by the NLM as being integrated within RxNorm)
-@source (RIN 0991-AB58 Sec 170.205(2)(iv)(A))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Medication product code MUST be encoded in RXNORM")
+@testid ("8bf19d27-5b71-4786-8330-85c7469ec111")
+@description ("This test checks for at least one code with a coding system of either RxNorm or NDC. Criteria is any code set by an RxNorm drug data source provider that is identified by the NLM as being integrated within RxNorm")
+@source ("RIN 0991-AB58 Sec 170.205(2)(iv)(A)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		Medications($m:medication )
 		$s:StructuredProductType( $p:product) from $m
@@ -65,12 +65,12 @@ rule "Medication product code should be encoded in RXNORM or NDC"
 end
 
 rule "MU - No Medication List Found in CCR"
-@title (Medication List must be supported by the certified EHR technology but are not required for each CCR)
-@testid (cceef309-dac4-402a-923c-699e53e65ae9)
-@description (Checks to see if Medication are provided in the CCR )
-@source (RIN 0991-AB58 Sec 170.205(2)(iv))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Medication List must be supported by the certified EHR technology but are not required for each CCR")
+@testid ("cceef309-dac4-402a-923c-699e53e65ae9")
+@description ("Checks to see if Medication are provided in the CCR")
+@source ("RIN 0991-AB58 Sec 170.205(2)(iv)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		not $m: Medications()
 	then

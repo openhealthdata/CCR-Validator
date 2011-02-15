@@ -30,8 +30,8 @@ rule "MU - Ethnicity"
 @testid ()
 @description ()
 @source ()
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		
 	then
@@ -43,8 +43,8 @@ rule "MU - Race"
 @testid )
 @description ()
 @source ()
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		
 	then
@@ -56,8 +56,8 @@ rule "MU - Preferred Language"
 @testid ()
 @description ()
 @source ()
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		
 	then

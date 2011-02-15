@@ -35,12 +35,12 @@ import org.astm.ccr.SourceType;
 global ValidationResultManager val_result;
 
 rule "Each CCRDataObjectID must have a unique value"
-@title (Each CCRDataObjectID must have a unique value)
-@testid (82be6b78-f38d-4548-9b5d-b593def411b8)
-@description (This test makes sure an CCRDataObjectID value is not duplicated.)
-@source (E2369-05)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Each CCRDataObjectID must have a unique value")
+@testid ("82be6b78-f38d-4548-9b5d-b593def411b8")
+@description ("This test makes sure an CCRDataObjectID value is not duplicated.")
+@source ("E2369-05")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
 		CCRCodedDataObjectType(this != $c, CCRDataObjectID == $id)
@@ -64,12 +64,12 @@ rule "Each CCRDataObjectID must have a unique value"
 end
 
 rule "A CCRDataObjectID must not equal an ActorObjectID"
-@title (A CCRDataObjectID must not equal an ActorObjectID)
-@testid (a2b66b98-f38s-4148-9b5d-b593def411b8)
-@description (This test makes sure an CCRDataObjectID value is not the same as an ActorObjectID.)
-@source (E2369-05)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("A CCRDataObjectID must not equal an ActorObjectID")
+@testid ("a2b66b98-f38s-4148-9b5d-b593def411b8")
+@description ("This test makes sure an CCRDataObjectID value is not the same as an ActorObjectID.")
+@source ("E2369-05")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
 		ActorType( actorObjectID == $id )

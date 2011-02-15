@@ -33,12 +33,12 @@ global ValidationResultManager val_result;
 
 
 rule "Medication type must of one of the required string values"
-@title (Check for recommended code set for medication type)
-@testid (7d8b190b-d511-4b3c-abd4-a01a812b52d8)
-@description (This test checks for one of the following Strings for <Type>:  Medication, IV Fluid, Parental Nutrition, Supplemental Nutrition, Immunization, Disposable, Supplies, Device, Implantable Device, Durable Medical Equipment.)
-@source (E2369-05 Table A1.1 Page 21)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Check for recommended code set for medication type")
+@testid ("7d8b190b-d511-4b3c-abd4-a01a812b52d8")
+@description ("This test checks for one of the following Strings for <Type>:  Medication, IV Fluid, Parental Nutrition, Supplemental Nutrition, Immunization, Disposable, Supplies, Device, Implantable Device, Durable Medical Equipment.")
+@source ("E2369-05 Table A1.1 Page 21")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $ty:type ) from $m
@@ -66,12 +66,12 @@ rule "Medication type must of one of the required string values"
 end
 
 rule "Medication status must of one of the required string values"
-@title (Check for recommended code set for medication status)
-@testid (d58ebc02-ae7f-4b24-9c41-9204f485a6b4)
-@description (This test checks for one of the following Strings for <Status>:  Active, Inactive, On Hold, Prior History No Longer Active.)
-@source (E2369-05 Table A1.1 Page 21)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Check for recommended code set for medication status")
+@testid ("d58ebc02-ae7f-4b24-9c41-9204f485a6b4")
+@description ("This test checks for one of the following Strings for <Status>:  Active, Inactive, On Hold, Prior History No Longer Active.")
+@source ("E2369-05 Table A1.1 Page 21")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $s:status  ) from $m
@@ -97,12 +97,12 @@ rule "Medication status must of one of the required string values"
 end
 
 rule "Medication product code should be encoded in RXNORM or NDC"
-@title (Medication product code should be encoded in RXNORM or NDC)
-@testid (8bf19d27-5b71-4786-8330-85c7469ec110)
-@description (This test checks for at least one code with a coding system of either RxNorm or NDC for a medication.  An NCD Code or RxNorm Code (preferred) should be used for <ProductName>.)
-@source (E2369-05 Table A1.1 Page 21)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Medication product code should be encoded in RXNORM or NDC")
+@testid ("8bf19d27-5b71-4786-8330-85c7469ec110")
+@description ("This test checks for at least one code with a coding system of either RxNorm or NDC for a medication.  An NCD Code or RxNorm Code (preferred) should be used for <ProductName>.")
+@source ("E2369-05 Table A1.1 Page 21")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Medications($m:medication )
 		$s:StructuredProductType( $p:product) from $m

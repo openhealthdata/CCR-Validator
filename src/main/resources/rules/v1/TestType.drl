@@ -30,12 +30,12 @@ import org.astm.ccr.CodedDescriptionType;
 global ValidationResultManager val_result;
 
 rule "Test type must be one of the required string values"
-@title (Test type must be one of the required string values)
-@testid (5edefcc5-e119-41e0-a71c-97124aba7aef)
-@description (Test type must be one of the required string values: Observation, Result.)
-@source (E2369-05 Table A1.1 Page 27)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Test type must be one of the required string values")
+@testid ("5edefcc5-e119-41e0-a71c-97124aba7aef")
+@description ("Test type must be one of the required string values: Observation, Result.")
+@source ("E2369-05 Table A1.1 Page 27")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$t: TestType( $ty:type )
 		CodedDescriptionType( this == $ty, $tx:text not in ("Observation", "Result") )
@@ -58,12 +58,12 @@ rule "Test type must be one of the required string values"
 end
 
 rule "Test status must be one of the required string values"
-@title (Test status must be one of the required string values)
-@testid (51266a92-2f9b-4ef3-a040-5f8bfa32b1ea)
-@description (Test status must be one of the required string values: Pending, In Process Preliminary Results, Final Results, Corrected Results.)
-@source (E2369-05 Table A1.1 Page 27)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Test status must be one of the required string values")
+@testid ("51266a92-2f9b-4ef3-a040-5f8bfa32b1ea")
+@description ("Test status must be one of the required string values: Pending, In Process Preliminary Results, Final Results, Corrected Results.")
+@source ("E2369-05 Table A1.1 Page 27")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$t: TestType($s:status)
 		CodedDescriptionType( this == $s, $tx:text not in ("Pending", "In Process Preliminary Results",

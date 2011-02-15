@@ -31,12 +31,12 @@ global ValidationResultManager val_result;
 
 
 rule "Social History status must be one of the required string values"
-@title (Social History status must be one of the required string values)
-@testid (88b26e2e-3ddc-4791-823a-d141b04f5eaf)
-@description (Social History status must be one of the required string values: Active, Prior History No Longer Active, Unknown.)
-@source (E2369-05 Table A1.1 Page 18)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Social History status must be one of the required string values")
+@testid ("88b26e2e-3ddc-4791-823a-d141b04f5eaf")
+@description ("Social History status must be one of the required string values: Active, Prior History No Longer Active, Unknown.")
+@source ("E2369-05 Table A1.1 Page 18")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$sht:SocialHistoryType($s:status)
 		CodedDescriptionType( this == $s, $t:text not in ("Active", 

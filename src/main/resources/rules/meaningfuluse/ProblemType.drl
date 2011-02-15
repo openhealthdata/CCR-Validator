@@ -34,12 +34,12 @@ global ValidationResultManager val_result;
 
 
 rule "MU - Problem description MUST be coded in either ICD9-CM, or SNOMED"
-@title (Problem description must be coded in either ICD9-CM, or SNOMED)
-@testid (f55b0a86-8b56-4468-8de3-0246fe186fa6)
-@description ('Checks to see if Problem description has at least one code with a CodingSystem of either ICD9-CM, SNOMED, or SNOMED-CT. As referenced in 42CFR-Part 162.1002(a)(1)')
-@source (RIN 0991-AB58 Sec 170.205(2)(i)(A) and (B))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Problem description must be coded in either ICD9-CM, or SNOMED")
+@testid ("f55b0a86-8b56-4468-8de3-0246fe186fa6")
+@description ("Checks to see if Problem description has at least one code with a CodingSystem of either ICD9-CM, SNOMED, or SNOMED-CT. As referenced in 42CFR-Part 162.1002(a)(1)")
+@source ("RIN 0991-AB58 Sec 170.205(2)(i)(A) and (B)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		$p: ProblemType( $d:description )
 		CodedDescriptionType( this == $d, $c:code )
@@ -63,12 +63,12 @@ rule "MU - Problem description MUST be coded in either ICD9-CM, or SNOMED"
 end
 
 rule "MU - No Problem Found in CCR"
-@title (Problems must be supported by the certified EHR technology but are not required for each CCR)
-@testid (61d25f67-2197-4bad-b688-f6d0ccb37f47)
-@description (Checks to see if Problems are provided in the CCR )
-@source (RIN 0991-AB58 Sec 170.205(2)(i))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Problems must be supported by the certified EHR technology but are not required for each CCR")
+@testid ("61d25f67-2197-4bad-b688-f6d0ccb37f47")
+@description ("Checks to see if Problems are provided in the CCR ")
+@source ("RIN 0991-AB58 Sec 170.205(2)(i)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		not $p: ProblemType()
 	then

@@ -30,16 +30,16 @@ global ValidationResultManager val_result;
 /*
 	The regular expression for ISO8601 is from Cameron Brooks in a comment on:
 		http://underground.infovark.com/2008/07/22/iso-date-validation-regex/
-	//TODO need to update to limit to W notation and it doesn’t account for 
+	//TODO need to update to limit to W notation and it doesn't account for 
 		the duration or time interval part of the ISO 8601 spec
 */
 rule "ExactDateTime must be in the format of ISO8601"
-@title (ExactDateTime must be in the format of ISO8601)
-@testid (104b4fe2-1bdc-81e4-7d2c-d327cb859bb6)
-@description (This test makes sure that ExactDateTime formatted according to ISO 8601)
-@source (E2369-05 Section A1.1)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("ExactDateTime must be in the format of ISO8601")
+@testid ("104b4fe2-1bdc-81e4-7d2c-d327cb859bb6")
+@description ("This test makes sure that ExactDateTime formatted according to ISO 8601")
+@source ("E2369-05 Section A1.1")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$d:DateTimeType($e:exactDateTime not matches "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$")
 	then

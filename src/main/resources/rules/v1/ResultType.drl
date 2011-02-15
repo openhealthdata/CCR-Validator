@@ -33,12 +33,12 @@ import org.astm.ccr.extension.Results;
 global ValidationResultManager val_result;
 
 rule "Results type must be one of the required string values"
-@title (Results type must be one of the required string values)
-@testid (92a69a47-5e3d-4737-9185-8093641221b2)
-@description (Results type must be one of the required string values: Hematology, Chemistry, Serology, Virology, Toxicology, Microbiology, Imaging - X-ray, Ultrasound, CT, MRI, Angiography, Cardiac Echo, Nuclear Medicine, Pathology, Procedure.)
-@source (E2369-05 Table A1.1 Page 26)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Results type must be one of the required string values")
+@testid ("92a69a47-5e3d-4737-9185-8093641221b2")
+@description ("Results type must be one of the required string values: Hematology, Chemistry, Serology, Virology, Toxicology, Microbiology, Imaging - X-ray, Ultrasound, CT, MRI, Angiography, Cardiac Echo, Nuclear Medicine, Pathology, Procedure.")
+@source ("E2369-05 Table A1.1 Page 26")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Results( $r:result )
 		$rt:ResultType($ty:type) from $r
@@ -65,12 +65,12 @@ rule "Results type must be one of the required string values"
 end
 
 rule "Results and VitalSigns description should be coded in either CPT or LOINC where applicable"
-@title (Results and VitalSigns description should be coded in either CPT or LOINC where applicable)
-@testid (255b550a-4c64-4890-ae1a-e264fb2bd895)
-@description (Results and VitalSigns description should be coded in either CPT or LOINC where applicable)
-@source (E2369-05 Table A1.1 Page 27)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Results and VitalSigns description should be coded in either CPT or LOINC where applicable")
+@testid ("255b550a-4c64-4890-ae1a-e264fb2bd895")
+@description ("Results and VitalSigns description should be coded in either CPT or LOINC where applicable")
+@source ("E2369-05 Table A1.1 Page 27")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$rt:ResultType( $d:description )
 		CodedDescriptionType( this == $d, $c:code  )

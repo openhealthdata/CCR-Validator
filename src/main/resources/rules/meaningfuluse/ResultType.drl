@@ -30,12 +30,12 @@ global ValidationResultManager val_result;
 
 /*
 rule "Lab results must be coded in LOINC - Using Description"
-@title (Lab results must be coded in LOINC)
-@testid (5978f3c2-f7ae-47f9-aa6a-4c3809db3729)
-@description (Checks to see if any lab results coded in <Description> XML element are coded in LOINC. If labs send to EHR using LOINC, certified EHR technology must provide LOINC codes in CCR)
-@source (RIN 0991-AB58 Sec 170.205(2)(iii)(A))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Lab results must be coded in LOINC")
+@testid ("5978f3c2-f7ae-47f9-aa6a-4c3809db3729")
+@description ("Checks to see if any lab results coded in <Description> XML element are coded in LOINC. If labs send to EHR using LOINC, certified EHR technology must provide LOINC codes in CCR")
+@source ("RIN 0991-AB58 Sec 170.205(2)(iii)(A)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		not (
 			$r: ResultType( $d:description, $t:type ) and

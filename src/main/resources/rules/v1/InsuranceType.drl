@@ -35,12 +35,12 @@ global ValidationResultManager val_result;
 
 
 rule "A Payer dateTime must be an exact datetime"
-@title (A Payer dateTime must be an exact datetime)
-@testid (473d728c-ccff-4c2f-9d49-59ee276d99cf)
-@description (A Payer dateTime must be an exact datetime.)
-@source (E2369-05 Table A1.1)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("A Payer dateTime must be an exact datetime")
+@testid ("473d728c-ccff-4c2f-9d49-59ee276d99cf")
+@description ("A Payer dateTime must be an exact datetime.")
+@source ("E2369-05 Table A1.1")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$i:InsuranceType($dates:dateTime)
 		DateTimeType(exactDateTime == null) from $dates
@@ -63,12 +63,12 @@ rule "A Payer dateTime must be an exact datetime"
 end
 
 rule "Payer type must be a valid structured text value"
-@title (Payer type must be a valid structured text value)
-@testid (5f0c7eaa-89a1-4e38-bae5-8209392b1469)
-@description (Payer type must be one of the following values:  Self-Pay, Primary Health Insurance, Supplemental Health Insurance, Prescription, Drug Benefit, Mental Health Benefit, Long Term Care Benefit, Workers Compensation, Auto Insurance, Dental Insurance, Other.)
-@source (E2369-05 Table A1.1)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Payer type must be a valid structured text value")
+@testid ("5f0c7eaa-89a1-4e38-bae5-8209392b1469")
+@description ("Payer type must be one of the following values:  Self-Pay, Primary Health Insurance, Supplemental Health Insurance, Prescription, Drug Benefit, Mental Health Benefit, Long Term Care Benefit, Workers Compensation, Auto Insurance, Dental Insurance, Other.")
+@source ("E2369-05 Table A1.1")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		InsuranceType($t:type)
 		CodedDescriptionType( this == $t, $tx:text not in ("Self-Pay", "Primary Health Insurance",
@@ -94,12 +94,12 @@ rule "Payer type must be a valid structured text value"
 end
 
 rule "Payer IDs must have a type"
-@title (Payer IDs must have a type)
-@testid (5977dd58-e0ff-4aa9-ae22-f0919f6c4811)
-@description (Payer IDs must have a type)
-@source (E2369-05 Table A1.1)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Payer IDs must have a type")
+@testid ("5977dd58-e0ff-4aa9-ae22-f0919f6c4811")
+@description ("Payer IDs must have a type")
+@source ("E2369-05 Table A1.1")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$i:InsuranceType($ids:IDs)
 		IDType( type == null ) from $ids

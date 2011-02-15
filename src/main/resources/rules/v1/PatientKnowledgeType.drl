@@ -32,12 +32,12 @@ import org.astm.ccr.SourceType;
 global ValidationResultManager val_result;
 
 rule "Patient aware in patient knowledge must be either Yes, No, or Unknown"
-@title (Patient aware in patient knowledge must be either Yes, No, or Unknown)
-@testid (7779fbbc-2d81-4041-bf09-0074a35ab09d)
-@description (Patient aware in patient knowledge must be either Yes, No, or Unknown)
-@source (E2369-05 Table A1.1 Page 16)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Patient aware in patient knowledge must be either Yes, No, or Unknown")
+@testid ("7779fbbc-2d81-4041-bf09-0074a35ab09d")
+@description ("Patient aware in patient knowledge must be either Yes, No, or Unknown")
+@source ("E2369-05 Table A1.1 Page 16")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		PatientKnowledgeType($pa:patientAware not in ("Yes", "No", "Unknown"))
 	then

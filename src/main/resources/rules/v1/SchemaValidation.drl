@@ -37,12 +37,12 @@ import java.io.File;
 global ValidationResultManager val_result;
 
 rule "Check for Schema Errors - DOM"
-@title (CCR Instance must validate against the CCR XSD)
-@testid (b785737b-b024-4e91-a39f-0da14411cf45)
-@description (This test makes sure a CCR instance validates against the CCR XML Schema and only if its passes this validation will additional tests be evaluated.)
-@source (E2369-05)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("CCR Instance must validate against the CCR XSD")
+@testid ("b785737b-b024-4e91-a39f-0da14411cf45")
+@description ("This test makes sure a CCR instance validates against the CCR XML Schema and only if its passes this validation will additional tests be evaluated.")
+@source ("E2369-05")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		// TODO Make the LHS more specific for deployment
 		// 		in multi-standard rulebases

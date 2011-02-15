@@ -33,12 +33,12 @@ global ValidationResultManager val_result;
 
 
 rule "MU - Procedure description MUST be coded in either ICD9-CM, or CPT-4"
-@title (Procedure description must be coded in either ICD9-CM, or CPT-4)
-@testid (5978f3c2-f7ae-47f9-aa6a-4c3809db3729)
-@description ('Checks to see if Procedure description has at least one code with a CodingSystem of either ICD9-CM or CPT-4. As referenced in 42CFR-Part 162.1002(a)(2) and (5)')
-@source (RIN 0991-AB58 Sec 170.205(2)(ii)(A) and (B))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Procedure description must be coded in either ICD9-CM, or CPT-4")
+@testid ("5978f3c2-f7ae-47f9-aa6a-4c3809db3729")
+@description ("Checks to see if Procedure description has at least one code with a CodingSystem of either ICD9-CM or CPT-4. As referenced in 42CFR-Part 162.1002(a)(2) and (5)")
+@source ("RIN 0991-AB58 Sec 170.205(2)(ii)(A) and (B)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		$p: ProcedureType( $d:description )
 		CodedDescriptionType( this == $d, $c:code )
@@ -62,12 +62,12 @@ rule "MU - Procedure description MUST be coded in either ICD9-CM, or CPT-4"
 end
 
 rule "MU - No Procedure Found in CCR"
-@title (Procedure must be supported by the certified EHR technology but are not required for each CCR)
-@testid (f9fdf3f6-5c66-4e9f-ba2c-d57fbe294567)
-@description (Checks to see if Procedures are provided in the CCR )
-@source (RIN 0991-AB58 Sec 170.205(2)(ii))
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Procedure must be supported by the certified EHR technology but are not required for each CCR")
+@testid ("f9fdf3f6-5c66-4e9f-ba2c-d57fbe294567")
+@description ("Checks to see if Procedures are provided in the CCR")
+@source ("RIN 0991-AB58 Sec 170.205(2)(ii)")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		not $p: ProcedureType()
 	then

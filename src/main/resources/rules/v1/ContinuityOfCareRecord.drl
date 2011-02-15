@@ -32,12 +32,12 @@ import java.util.List;
 global ValidationResultManager val_result;
 
 rule "CCR Version 1.0 must have of string V1.0 as Version"
-@title (CCR Version 1.0 must have of string V1.0 as Version)
-@testid (214b1ef3-2acb-92d5-8c3b-e438ba960cc7)
-@description (This test makes sure that there is a fixed string of 'V1.0' in <Version>.)
-@source (E2369-05)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("CCR Version 1.0 must have of string V1.0 as Version")
+@testid ("214b1ef3-2acb-92d5-8c3b-e438ba960cc7")
+@description ("This test makes sure that there is a fixed string of 'V1.0' in <Version>.")
+@source ("E2369-05")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$c:ContinuityOfCareRecord($v:version != "V1.0")
 	then
@@ -60,12 +60,12 @@ rule "CCR Version 1.0 must have of string V1.0 as Version"
 end
 
 rule "CCR must have an ExactDateTime"
-@title (CCR must have an ExactDateTime)
-@testid (215a5ef3-2acb-92d5-8c3b-e438ba960cc7)
-@description (This test makes sure that there is an <ExactDateTime> for the CCR DateTime and it must be have precision to seconds.)
-@source (E2369-05)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("CCR must have an ExactDateTime")
+@testid ("215a5ef3-2acb-92d5-8c3b-e438ba960cc7")
+@description ("This test makes sure that there is an <ExactDateTime> for the CCR DateTime and it must be have precision to seconds.")
+@source ("E2369-05")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$c:ContinuityOfCareRecord($d:dateTime)
 		DateTimeType(this == $d, exactDateTime not matches "([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?")
@@ -89,12 +89,12 @@ rule "CCR must have an ExactDateTime"
 end
 
 rule "CCR should not have any datetime children except ExactDateTime"
-@title (CCR should not have any datetime children except ExactDateTime)
-@testid (a45a56f3-23cb-92d5-8d3b-e438ba960cc7)
-@description (This test makes sure that there are no <Age>, <ApproximateDateTime>, or <DateTimeRange> children for the CCR DateTime.)
-@source (E2369-05 Section A1.1)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("CCR should not have any datetime children except ExactDateTime")
+@testid ("a45a56f3-23cb-92d5-8d3b-e438ba960cc7")
+@description ("This test makes sure that there are no <Age>, <ApproximateDateTime>, or <DateTimeRange> children for the CCR DateTime.")
+@source ("E2369-05 Section A1.1")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$c:ContinuityOfCareRecord($d:dateTime)
 		DateTimeType(this == $d && ($a:age != null || $ap:approximateDateTime != null) && $dt:dateTimeRange)

@@ -31,12 +31,12 @@ global ValidationResultManager val_result;
 
 
 rule "Direction stopIndicator if present can only be the string 'Yes'"
-@title (Stop Indicator for a direction must be 'yes')
-@testid (5f3565b7-f3df-4bff-878a-54114d260f1c)
-@description (If a medication uses the <StopIndicator> the text value must be 'Yes')
-@source (E2369-05 Table A1.1 Page 24)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Stop Indicator for a direction must be 'yes'")
+@testid ("5f3565b7-f3df-4bff-878a-54114d260f1c")
+@description ("If a medication uses the <StopIndicator> the text value must be 'Yes'")
+@source ("E2369-05 Table A1.1 Page 24")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$d: Direction($s: stopIndicator)
 		CodedDescriptionType( this == $s, $t:text != "Yes" )
@@ -59,12 +59,12 @@ rule "Direction stopIndicator if present can only be the string 'Yes'"
 end
 
 rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'"
-@title (Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN')
-@testid (5f3565b7-f3df-4bff-878a-54114d260f1c)
-@description (Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'.)
-@source (E2369-05 Table A1.1 Page 24)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'")
+@testid ("5f3565b7-f3df-4bff-878a-54114d260f1c")
+@description ("Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'.")
+@source ("E2369-05 Table A1.1 Page 24")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$d: Direction($m: multipleDirectionModifier)
 		CodedDescriptionType( this == $m, $t:text not in ("AND", "OR", "THEN") )
@@ -87,12 +87,12 @@ rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN
 end
 
 rule "Direction when multiple direction modifier is 'THEN' there should be direction sequence position"
-@title (Direction when multiple direction modifier is 'THEN' there should be direction sequence position)
-@testid (274ce240-ed8b-40ae-8658-fb17a11d9d3b)
-@description (Direction when multiple direction modifier is 'THEN' there should be direction sequence position.)
-@source (E2369-05 Table A1.1 Page 24)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Direction when multiple direction modifier is 'THEN' there should be direction sequence position")
+@testid ("274ce240-ed8b-40ae-8658-fb17a11d9d3b")
+@description ("Direction when multiple direction modifier is 'THEN' there should be direction sequence position.")
+@source ("E2369-05 Table A1.1 Page 24")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$d: Direction($m: multipleDirectionModifier)
 		CodedDescriptionType( this == $m, $t:text == "THEN" )

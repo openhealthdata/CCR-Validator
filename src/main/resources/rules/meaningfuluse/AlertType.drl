@@ -40,12 +40,12 @@ global ValidationResultManager val_result;
 // RULE that Allergies need to be coded with UNII
 // TODO add differiation of non-medication allergies, which do not use agent
 rule "Medication Allergies MUST be encoded with UNII - Description"
-@title (Medication Allergies MUST be encoded in UNII)
-@testid (8bf19d27-5b71-4786-8330-64b7357ad489)
-@description (This test checks for at least one code with a coding system of either UNII or unii for an allergy.  An UNII Code must be used for medication alleries)
-@source (RIN 0991-AB58)
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Medication Allergies MUST be encoded in UNII")
+@testid ("8bf19d27-5b71-4786-8330-64b7357ad489")
+@description ("This test checks for at least one code with a coding system of either UNII or unii for an allergy.  An UNII Code must be used for medication alleries")
+@source ("RIN 0991-AB58")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		$al: AlertType( $ty:type, $des:description, agent == null)
 		CodedDescriptionType (this == $ty, text == "Allergy")
@@ -71,12 +71,12 @@ rule "Medication Allergies MUST be encoded with UNII - Description"
 end
 	
 rule "Medication Allergies MUST be encoded with UNII - Agent"
-@title (Medication Allergies MUST be encoded in UNII)
-@testid (8bf19d27-5b71-4786-8330-64b7357ad480)
-@description (This test checks for at least one code with a coding system of either UNII or unii for the <ProductName> in <Agent>.  An UNII Code must be used for medication alleries)
-@source (RIN 0991-AB58)
-@profile (RIN 0991-AB58)
-@author (openhealthdata)
+@title ("Medication Allergies MUST be encoded in UNII")
+@testid ("8bf19d27-5b71-4786-8330-64b7357ad480")
+@description ("This test checks for at least one code with a coding system of either UNII or unii for the <ProductName> in <Agent>.  An UNII Code must be used for medication alleries")
+@source ("RIN 0991-AB58")
+@profile ("RIN 0991-AB58")
+@author ("openhealthdata")
 	when
 		$al: AlertType( $ty:type, $ag:agent)
 		CodedDescriptionType (this == $ty, text == "Allergy")

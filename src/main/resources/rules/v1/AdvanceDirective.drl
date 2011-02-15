@@ -38,8 +38,8 @@ rule "AdvanceDirective type must one of required values"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $ty:type ) from $a
@@ -64,8 +64,8 @@ rule "AdvanceDirective type is required"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		$c: CCRCodedDataObjectType( $t:type == null ) from $a
@@ -84,8 +84,8 @@ rule "AdvanceDirective description is required"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		$c: CCRCodedDataObjectType( $d:description == null ) from $a
@@ -105,8 +105,8 @@ rule "AdvanceDirective status is required"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		$c: CCRCodedDataObjectType( $s:status == null ) from $a
@@ -126,8 +126,8 @@ rule "An Advance Directive dateTime must be an exact datetime"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		$c:CCRCodedDataObjectType($dates:dateTime) from $a
@@ -150,8 +150,8 @@ rule "AdvanceDirective example datetime type values"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		$c:CCRCodedDataObjectType($dates:dateTime) from $a
@@ -180,8 +180,8 @@ rule "AdvanceDirective required status values"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $s:status ) from $a
@@ -207,8 +207,8 @@ rule "AdvanceDirective required type values"
 @testid ()
 @description ()
 @source ()
-@profile (E2369-05)
-@author (openhealthdata)
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $ty:type ) from $a

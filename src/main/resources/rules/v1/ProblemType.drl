@@ -32,12 +32,12 @@ import org.astm.ccr.CodeType;
 global ValidationResultManager val_result;
 
 rule "Problem type must be one of the required string values"
-@title (Problem type must be one of the required string values)
-@testid (de6dd1c9-0b25-4a0b-85c2-cc5c06031105)
-@description (Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.)
-@source (E2369-05 Table A1.1 Page 15)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Problem type must be one of the required string values")
+@testid ("de6dd1c9-0b25-4a0b-85c2-cc5c06031105")
+@description ("Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.")
+@source ("E2369-05 Table A1.1 Page 15")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$p: ProblemType( $ty:type )
 		CodedDescriptionType( this == $ty, $t:text not in ("Problem", "Condition", 
@@ -61,12 +61,12 @@ rule "Problem type must be one of the required string values"
 end
 
 rule "Problem description should be coded in either ICD-9, ICD9-CM, ICD-10, or SNOMED"
-@title (Problem description should be coded in either ICD9-CM, ICD-10, or SNOMED)
-@testid (f55b0a86-8b56-4468-8de3-0246fe186fe9)
-@description (Checks to see if Problem description has at least one code with a CodingSystem of either ICD9-CM, ICD-10, SNOMED, or SNOMED-CT)
-@source (E2369-05 Table A1.1 Page 15)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Problem description should be coded in either ICD9-CM, ICD-10, or SNOMED")
+@testid ("f55b0a86-8b56-4468-8de3-0246fe186fe9")
+@description ("Checks to see if Problem description has at least one code with a CodingSystem of either ICD9-CM, ICD-10, SNOMED, or SNOMED-CT")
+@source ("E2369-05 Table A1.1 Page 15")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$p: ProblemType( $d:description )
 		CodedDescriptionType( this == $d, $c:code )
@@ -90,12 +90,12 @@ rule "Problem description should be coded in either ICD-9, ICD9-CM, ICD-10, or S
 end
 
 rule "Problem status must be one of the required string values"
-@title (Problem <Status> must one of the required values)
-@testid (a5ccd350-9acf-123a-bc6a-62a7b0a9a3e0)
-@description (Text content of <Status> for Problem must be one of the defined structured text values: Active, Inactive, Chronic, Intermittent, Recurrent, Rule Out, Ruled Out, Resolved.)
-@source (E2369-05 Table A1.1 Page 15)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Problem <Status> must one of the required values")
+@testid ("a5ccd350-9acf-123a-bc6a-62a7b0a9a3e0")
+@description ("Text content of <Status> for Problem must be one of the defined structured text values: Active, Inactive, Chronic, Intermittent, Recurrent, Rule Out, Ruled Out, Resolved.")
+@source ("E2369-05 Table A1.1 Page 15")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$p: ProblemType( $s:status )
 		CodedDescriptionType( this == $s, $t:text not in ("Active", 

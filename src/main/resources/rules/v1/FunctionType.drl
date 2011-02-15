@@ -31,12 +31,12 @@ import org.astm.ccr.CodedDescriptionType;
 global ValidationResultManager val_result;
 
 rule "Functional status type must be one of the required strings"
-@title (Functional status type must be one of the required strings)
-@testid (94103750-4b28-4324-be90-65d00f9b80d1)
-@description (Functional status type must be one of the required strings: Ambulatory Status, Mental Status, Activities of Daily Living, Home/Living Situation, Ability to Care for Self.)
-@source (E2369-05 Table A1.1 Page 14)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Functional status type must be one of the required strings")
+@testid ("94103750-4b28-4324-be90-65d00f9b80d1")
+@description ("Functional status type must be one of the required strings: Ambulatory Status, Mental Status, Activities of Daily Living, Home/Living Situation, Ability to Care for Self.")
+@source ("E2369-05 Table A1.1 Page 14")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$f: FunctionType($ty:type)
 		CodedDescriptionType( this == $ty, $t:text not in ("Ambulatory Status", 
@@ -61,15 +61,15 @@ rule "Functional status type must be one of the required strings"
 end
 
 rule "Functional status description can only be used without a problem or test"
-@title (Functional status description can only be used without a problem or test)
-@testid (8075fd7b-4676-4330-835c-a15d8c0e947e)
-@description (Functional status description can only be used without a problem or test)
-@source (E2369-05 Table A1.1 Page 14)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Functional status description can only be used without a problem or test")
+@testid ("8075fd7b-4676-4330-835c-a15d8c0e947e")
+@description ("Functional status description can only be used without a problem or test")
+@source ("E2369-05 Table A1.1 Page 14")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$f: FunctionType(description != null, $p:problem, $t:test)
-		(List(this == $p, size > 0) || List(this == $t, size >0))
+		(List(this == $p, size > 0) OR List(this == $t, size >0))
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");
@@ -89,12 +89,12 @@ rule "Functional status description can only be used without a problem or test"
 end
 
 rule "Functional status status must be one of the required strings"
-@title (Functional status status must be one of the required strings)
-@testid (f16db596-5f5e-43bd-97cc-3cf278896a04)
-@description (Functional status type must be one of the required strings: Active, Chronic, Temporary, Resolved.)
-@source (E2369-05 Table A1.1 Page 14)
-@profile (E2369-05)
-@author (openhealthdata)
+@title ("Functional status status must be one of the required strings")
+@testid ("f16db596-5f5e-43bd-97cc-3cf278896a04")
+@description ("Functional status type must be one of the required strings: Active, Chronic, Temporary, Resolved.")
+@source ("E2369-05 Table A1.1 Page 14")
+@profile ("E2369-05")
+@author ("openhealthdata")
 	when
 		$f: FunctionType($s:status)
 		CodedDescriptionType( this == $s, $t:text not in ("Active", 
