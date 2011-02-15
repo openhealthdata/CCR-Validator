@@ -34,6 +34,8 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
@@ -125,9 +127,11 @@ public class ValidationManager {
 							ResourceType.DRL);
 					// check for any errors and stop processing if found
 					if (kbuilder.hasErrors()){
-						logger.log(Level.SEVERE, "kbuilder error: "+kbuilder.getErrors().toString());
-						throw new RuntimeException(kbuilder.getErrors().toString());
-					}
+                        KnowledgeBuilderErrors kbuilderErrors = kbuilder.getErrors();
+                        for(KnowledgeBuilderError error : kbuilderErrors){
+                            logger.log(Level.SEVERE, "kbuilder error: "+ error.getMessage());
+                        }
+						throw new RuntimeException(kbuilderErrors.toString());					}
 				}
 			}
 		} else {
