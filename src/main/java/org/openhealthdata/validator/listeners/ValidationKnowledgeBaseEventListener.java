@@ -2,6 +2,7 @@ package org.openhealthdata.validator.listeners;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.definition.rule.Rule;
 import org.drools.event.knowledgebase.AfterFunctionRemovedEvent;
@@ -64,27 +65,28 @@ public class ValidationKnowledgeBaseEventListener implements
 		rt.setName(r.getName());
 		rt.setPackage(r.getPackageName());
 		// Check for the appropriate meta-attributes
-		String profile = r.getMetaAttribute("profile");
+        Map<String,Object> metaData = r.getMetaData();
+        String profile = (String) metaData.get("profile");
 		if (profile != null){
 			rt.setProfile(profile);
 		}
-		String testid = r.getMetaAttribute("testid");
+		String testid = (String) metaData.get("testid");
 		if(testid != null){
 			rt.setId(testid);
 		}
-		String title = r.getMetaAttribute("title");
+		String title = (String) metaData.get("title");
 		if(title != null){
 			rt.setTitle(title);
 		}
-		String description = r.getMetaAttribute("description");
+		String description = (String) metaData.get("description");
 		if (description != null){
 			rt.setDescription(description);
 		}
-		String source = r.getMetaAttribute("source");
+		String source = (String) metaData.get("source");
 		if (source != null){
 			rt.setSource(source);
 		}
-		String author = r.getMetaAttribute("author");
+		String author = (String) metaData.get("author");
 		if (author !=null){
 			rt.setAuthor(author);
 		}
