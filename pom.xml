@@ -39,6 +39,8 @@
         <version>7.2.2.v20101205</version>
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
+          <stopPort>9966</stopPort>
+          <stopKey>foo</stopKey>
         </configuration>
       </plugin>
       <plugin>
@@ -62,6 +64,6 @@
   </repositories>
 
   <properties>
-    <drools.version>5.0.1</drools.version>
+    <drools.version>5.2.0.SNAPSHOT</drools.version>
   </properties>
 </project>
