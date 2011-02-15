@@ -20,8 +20,11 @@ import java.io.File;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,40 +35,35 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
-import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.definition.rule.Rule;
 import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.openhealthdata.validation.CCRV1SchemaValidator;
 import org.openhealthdata.validation.result.BaseValidationManager;
+import org.openhealthdata.validation.result.RuleType;
 import org.openhealthdata.validation.result.ValidationResult;
 import org.openhealthdata.validation.result.ValidationResultManager;
-import org.openhealthdata.validator.listeners.ValidationKnowledgeBaseEventListener;
+import org.openhealthdata.validator.drools.KnowledgeBaseManager;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class ValidationManager {
 
 	private CCRV1SchemaValidator ccrSchVal;
-	private KnowledgeBase knowledgeBase;
-	// This will help keep track of rules for the validation result
-	ValidationKnowledgeBaseEventListener valKBEventListener = new ValidationKnowledgeBaseEventListener();
-
         private Logger logger = Logger.getLogger(this.getClass().getName());
+    private KnowledgeBaseManager kbaseManager;
 
 	/**
 	 * Create a new default ValidationManager.  Make sure you have 
 	 * added your CCR XSD file (see READMe.txt)
 	 */
-	public ValidationManager() {
+	public ValidationManager(KnowledgeBaseManager kbaseManager) {
+        this.kbaseManager = kbaseManager;
 		String schemalocation = "org/astm/ccr/CCRV1.xsd";
 		setupSchemaValidator(schemalocation);
 	}
@@ -80,64 +78,6 @@ public class ValidationManager {
 			logger.log(Level.SEVERE, "Failure to setup Schema Validator", e);
 			e.printStackTrace();
 		}
-	}
-
-	/*
-	 * Create the KnowledgeBase from base rules in "core" and "v1" packages
-	 */
-	private void createKnowledgeBase(String rulesFolder) throws URISyntaxException {
-		KnowledgeBuilder builder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder();
-		// Get the location of the root rules folder from the classpath
-		URL rules = this.getClass().getResource(rulesFolder);
-		// Get file handler from the URL
-		File rDir = new File(rules.toURI());
-		// Make sure it is a directory and load all subfolders
-		if (rDir.isDirectory()){
-			for (File f : rDir.listFiles()){
-				//only process directories
-				if (f.isDirectory()){
-					addDirectory(f, builder);
-				}
-			}
-		}
-		// Create a new knowledgebase
-		knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-		// Add our listener
-		knowledgeBase.addEventListener(valKBEventListener);
-		// Add the rule packages to the new knowledge base
-		knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
-	}
-	
-
-	/*
-	 * Add the knowledge resources in the directory into the KnowledgeBuilder
-	 */
-	private void addDirectory(File dir, KnowledgeBuilder kbuilder) {
-		// TODO Add non-DRL files - for future
-		logger.log(Level.INFO,"addDirectory: " + dir.getAbsolutePath());
-		if (dir.isDirectory()) {
-			File[] resources = dir.listFiles(DroolsUtil
-					.getFilter(ResourceType.DRL));
-
-			if (resources != null) {
-				for (int i = 0; i < resources.length; i++) {
-					logger.log(Level.INFO,"adding: " + resources[i].getName());
-					kbuilder.add(ResourceFactory.newFileResource(resources[i]),
-							ResourceType.DRL);
-					// check for any errors and stop processing if found
-					if (kbuilder.hasErrors()){
-                        KnowledgeBuilderErrors kbuilderErrors = kbuilder.getErrors();
-                        for(KnowledgeBuilderError error : kbuilderErrors){
-                            logger.log(Level.SEVERE, "kbuilder error: "+ error.getMessage());
-                        }
-						throw new RuntimeException(kbuilderErrors.toString());					}
-				}
-			}
-		} else {
-			throw new RuntimeException("File is not a directory:"+dir.getName());
-		}
-		logger.log(Level.FINEST,"Builder Pkg: "+kbuilder.getKnowledgePackages().size());
 	}
 	
 	/**
@@ -185,15 +125,7 @@ public class ValidationManager {
 	 * along with the CCRV1SchemaValidator
 	 */
 	private ValidationResult validate(Object xml, String fileName) {
-		// Create knowledgebase if not setup yet
-		if (this.knowledgeBase == null) {
-			try {
-				createKnowledgeBase("/rules");
-			} catch (URISyntaxException e) {
-				logger.log(Level.SEVERE, "Malformed URI when creating knowledge base", e);
-				e.printStackTrace();
-			}
-		}
+        KnowledgeBase kbase = kbaseManager.getKnowledgeBase();
 		// Get Default ValidationResult and add to ValidationManager
 		ValidationResultManager valResMan = new BaseValidationManager();
 		ValidationResult result = new ValidationResult();
@@ -210,15 +142,14 @@ public class ValidationManager {
 			e.printStackTrace();
 		}
 		// Create a working memory session
-		Collection<KnowledgePackage> pkgs = this.knowledgeBase.getKnowledgePackages();
+		Collection<KnowledgePackage> pkgs = kbase.getKnowledgePackages();
 		logger.log(Level.INFO, "Pkg list: "+pkgs.size());
-		StatefulKnowledgeSession ksession = this.knowledgeBase
-				.newStatefulKnowledgeSession();
-		// TODO this currently bypasses the validation manager but works
-		// there is the potential in the future for a rule to be added to the knowledgebase after
-		// the ksession is created but before the calling of the following line. This is very highly unlikely 
-		// in the future and impossible currently.
-		result.getRules().getRule().addAll(valKBEventListener.getRules());
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Rule> rules = new ArrayList<Rule>();
+        for (KnowledgePackage kpackage : kbase.getKnowledgePackages()){
+            rules.addAll(kpackage.getRules());
+        }
+		result.getRules().getRule().addAll(getRuleTypes(rules));
 		//Set the global variable which will be used by the rules to aggregate results of validation
 		ksession.setGlobal("val_result", valResMan);
 		ksession.insert(xml);
@@ -261,5 +192,42 @@ public class ValidationManager {
                 // DOM in memory and check for root node of <ContinuityOfCare>
                 
 	}
+
+    private List<RuleType> getRuleTypes(List<Rule> rules){
+        List<RuleType> types = new ArrayList<RuleType>();
+        for (Rule r : rules) {
+            RuleType rt = new RuleType();
+            rt.setName(r.getName());
+            rt.setPackage(r.getPackageName());
+            // Check for the appropriate meta-attributes
+            Map<String,Object> metaData = r.getMetaData();
+            String profile = (String) metaData.get("profile");
+            if (profile != null){
+                rt.setProfile(profile);
+            }
+            String testid = (String) metaData.get("testid");
+            if(testid != null){
+                rt.setId(testid);
+            }
+            String title = (String) metaData.get("title");
+            if(title != null){
+                rt.setTitle(title);
+            }
+            String description = (String) metaData.get("description");
+            if (description != null){
+                rt.setDescription(description);
+            }
+            String source = (String) metaData.get("source");
+            if (source != null){
+                rt.setSource(source);
+            }
+            String author = (String) metaData.get("author");
+            if (author !=null){
+                rt.setAuthor(author);
+            }
+            types.add(rt);
+        }
+        return types;
+    }
 
 }

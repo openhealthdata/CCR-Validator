@@ -21,6 +21,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.apache.commons.fileupload.*;
+import org.openhealthdata.validator.drools.InternalKnowledgeBaseManager;
 
 import 	 java.util.*;
 import java.util.logging.Level;
@@ -39,7 +40,7 @@ public class ValidatorServlet extends HttpServlet {
 	 * @see Servlet#init(ServletConfig)
 	 */
 	public void init(ServletConfig config) throws ServletException {
-		validator = new ValidationManager();
+		validator = new ValidationManager(new InternalKnowledgeBaseManager());
 		//TODO covert this to a dynamic runtime allocation
 	}
 	

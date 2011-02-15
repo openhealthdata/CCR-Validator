@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ValidationResult;
 import org.openhealthdata.validation.result.ValidationResultComparator;
+import org.openhealthdata.validator.drools.InternalKnowledgeBaseManager;
 
 import java.io.*;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class ValidatorManagerTest {
 
     @Test
     public void validateTest() throws IOException{
-        ValidationManager validationManager = new ValidationManager();
+        ValidationManager validationManager = new ValidationManager(new InternalKnowledgeBaseManager());
         ValidationResult vr = validationManager.validate(fileFromInputStream(getClass().getResourceAsStream("/ccr_sample.xml")));
         Assert.assertTrue(ValidationResultComparator.compare(vr, createExpectedResult(), true));
     }
