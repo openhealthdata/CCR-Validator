@@ -36,7 +36,6 @@ to be used, you can unzip the .WAR file and remove the org/astm/ccr/rules/meanin
 folder.
 
 
-
 ** MAY NEED TO CHANGE URL FOR XSL **
 The entry point is org.openhealthdata.validator.ValidatorServlet which is 
 tied to the context "/ValidationService"  Currently the location (URL) of the 
@@ -46,24 +45,31 @@ to change this behavior. There are instructions in the org.openhealthdata.valida
 source file.  A future release will have a property file that can be set to 
 override this behavior.
 
-** NEED TO ADD CCR XSD **h
+** NEED TO ADD CCR XSD **
 The ASTM E2369-05 CCR XSD is copyrighted to ASTM.  You will need to add 
 your copy to org.openhealthdata.validation and name it CCRV1.xsd.  There 
-is a stub file there now.s
+is a stub file there now.  There is a Maven (see Deployment below) test looking for 
+updated content and will cause a failed test if this stub is not replaced.
+The CCR XSD is available at http://www.astm.org/BOOKSTORE/ADJUNCT/734.htm
+
 
 Project structure
 =================
 The project is organized using maven. Any developer familiarized with this technology
 should be able to set up its IDE to start working with the project.
 
+Maven - http://maven.apache.org/
+
 Deployment 
 ==========
 Run
 $ mvn package
 and you should get a .war file into the target/ folder. This is the CCR validator webapp.
-This is deployable in any servlet container because it doesn't use any propietary extension
+This is deployable in any servlet container because it doesn't use any proprietary extension
 
 Testing
 =======
 For testing purpose it's possible to run an embedded jetty server with
 $ mvn jetty:run
+
+Then open a web browser to http://localhost
