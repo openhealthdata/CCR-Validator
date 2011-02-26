@@ -72,4 +72,4 @@ Testing
 For testing purpose it's possible to run an embedded jetty server with
 $ mvn jetty:run
 
-Then open a web browser to http://localhost
+Then open a web browser to http://localhost:8080
