@@ -10,6 +10,8 @@ import org.drools.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgePackageAddedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
+import org.drools.event.knowledgebase.AfterProcessAddedEvent;
+import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
 import org.drools.event.knowledgebase.AfterRuleAddedEvent;
 import org.drools.event.knowledgebase.AfterRuleRemovedEvent;
 import org.drools.event.knowledgebase.BeforeFunctionRemovedEvent;
@@ -17,6 +19,8 @@ import org.drools.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
+import org.drools.event.knowledgebase.BeforeProcessAddedEvent;
+import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
 import org.drools.event.knowledgebase.BeforeRuleAddedEvent;
 import org.drools.event.knowledgebase.BeforeRuleRemovedEvent;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
@@ -133,6 +137,26 @@ public class ValidationKnowledgeBaseEventListener implements
 
 	public void beforeRuleRemoved(BeforeRuleRemovedEvent arg0) {
 		// Nothing needed to be done
+	}
+
+	public void afterProcessAdded(AfterProcessAddedEvent arg0) {
+		// Nothing needed to be done
+		
+	}
+
+	public void afterProcessRemoved(AfterProcessRemovedEvent arg0) {
+		// Nothing needed to be done
+		
+	}
+
+	public void beforeProcessAdded(BeforeProcessAddedEvent arg0) {
+		// Nothing needed to be done
+		
+	}
+
+	public void beforeProcessRemoved(BeforeProcessRemovedEvent arg0) {
+		// Nothing needed to be done
+		
 	}
 
 
