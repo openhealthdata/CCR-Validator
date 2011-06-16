@@ -10,8 +10,10 @@ import org.drools.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgePackageAddedEvent;
 import org.drools.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
+/*
 import org.drools.event.knowledgebase.AfterProcessAddedEvent;
 import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
+*/
 import org.drools.event.knowledgebase.AfterRuleAddedEvent;
 import org.drools.event.knowledgebase.AfterRuleRemovedEvent;
 import org.drools.event.knowledgebase.BeforeFunctionRemovedEvent;
@@ -19,8 +21,10 @@ import org.drools.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
+/*
 import org.drools.event.knowledgebase.BeforeProcessAddedEvent;
 import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
+*/
 import org.drools.event.knowledgebase.BeforeRuleAddedEvent;
 import org.drools.event.knowledgebase.BeforeRuleRemovedEvent;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
@@ -63,34 +67,32 @@ public class ValidationKnowledgeBaseEventListener implements
 	}
 
 	public void afterRuleAdded(AfterRuleAddedEvent rae) {
-		// TODO Auto-generated method stub
 		RuleType rt = new RuleType();
 		Rule r = rae.getRule();
 		rt.setName(r.getName());
 		rt.setPackage(r.getPackageName());
 		// Check for the appropriate meta-attributes
-        Map<String,Object> metaData = r.getMetaData();
-        String profile = (String) metaData.get("profile");
+		String profile = r.getMetaAttribute("profile");
 		if (profile != null){
 			rt.setProfile(profile);
 		}
-		String testid = (String) metaData.get("testid");
+		String testid = r.getMetaAttribute("testid");
 		if(testid != null){
 			rt.setId(testid);
 		}
-		String title = (String) metaData.get("title");
+		String title = r.getMetaAttribute("title");
 		if(title != null){
 			rt.setTitle(title);
 		}
-		String description = (String) metaData.get("description");
+		String description = r.getMetaAttribute("description");
 		if (description != null){
 			rt.setDescription(description);
 		}
-		String source = (String) metaData.get("source");
+		String source = r.getMetaAttribute("source");
 		if (source != null){
 			rt.setSource(source);
 		}
-		String author = (String) metaData.get("author");
+		String author = r.getMetaAttribute("author");
 		if (author !=null){
 			rt.setAuthor(author);
 		}
@@ -138,7 +140,7 @@ public class ValidationKnowledgeBaseEventListener implements
 	public void beforeRuleRemoved(BeforeRuleRemovedEvent arg0) {
 		// Nothing needed to be done
 	}
-
+/*  for drools 5.2
 	public void afterProcessAdded(AfterProcessAddedEvent arg0) {
 		// Nothing needed to be done
 		
@@ -158,6 +160,6 @@ public class ValidationKnowledgeBaseEventListener implements
 		// Nothing needed to be done
 		
 	}
-
+*/
 
 }

@@ -24,9 +24,10 @@ public class ValidationResultComparator {
 		for (TestResultType t : vr.getTestResult()){
 			tests.put(t.getUid(), t.getStatus());
 		}
-		
+		System.out.println("Found validation tests of "+tests.size());
 		for (String k : expectedResult.keySet()){
 			if (tests.containsKey(k)){
+				System.out.println("found test");
 				if (!expectedResult.get(k).equals(tests.get(k))){
 					same = false;
 					break;

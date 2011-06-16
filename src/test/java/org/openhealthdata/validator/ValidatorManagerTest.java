@@ -24,16 +24,18 @@ public class ValidatorManagerTest {
     public void validateTest() throws IOException{
         ValidationManager validationManager = new ValidationManager(new InternalKnowledgeBaseManager());
         ValidationResult vr = validationManager.validate(fileFromInputStream(getClass().getResourceAsStream("/ccr_sample.xml")));
+        System.out.println(validationManager.convertToXML(vr));
         Assert.assertTrue(ValidationResultComparator.compare(vr, createExpectedResult(), true));
     }
     
     private HashMap<String, String> createExpectedResult(){
+    	// Escaped quotes are due to rules being drools 5.2 compatible
     	HashMap<String, String> res = new HashMap<String, String>();
-    	res.put("255b550a-4c64-4890-ae1a-e264fb2bd895", TestResultType.PASSED);
-    	res.put("f55b0a86-8b56-4468-8de3-0246fe186fe9", TestResultType.PASSED);
-    	res.put("f55b0a86-8b56-4468-8de3-0246fe186fa6", TestResultType.FAILED);
-    	res.put("f9fdf3f6-5c66-4e9f-ba2c-d57fbe294567", TestResultType.PASSED);
-    	res.put("cceef309-dac4-402a-923c-699e53e65ae9", TestResultType.PASSED);
+    	res.put("\"255b550a-4c64-4890-ae1a-e264fb2bd895\"", TestResultType.PASSED);
+    	res.put("\"f55b0a86-8b56-4468-8de3-0246fe186fe9\"", TestResultType.PASSED);
+    	res.put("\"f55b0a86-8b56-4468-8de3-0246fe186fa6\"", TestResultType.FAILED);
+    	res.put("\"f9fdf3f6-5c66-4e9f-ba2c-d57fbe294567\"", TestResultType.PASSED);
+    	res.put("\"cceef309-dac4-402a-923c-699e53e65ae9\"", TestResultType.PASSED);
     	return res;
     }
 
