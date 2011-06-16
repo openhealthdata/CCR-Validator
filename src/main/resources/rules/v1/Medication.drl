@@ -68,7 +68,7 @@ end
 rule "Medication status must of one of the required string values"
 @title ("Check for recommended code set for medication status")
 @testid ("d58ebc02-ae7f-4b24-9c41-9204f485a6b4")
-@description ("This test checks for one of the following Strings for <Status>:  Active, Inactive, On Hold, Prior History No Longer Active.")
+@description ("This test checks for one of the following Strings for <Status>:  Active, On Hold, Prior History No Longer Active.")
 @source ("E2369-05 Table A1.1 Page 21")
 @profile ("E2369-05")
 @author ("openhealthdata")
