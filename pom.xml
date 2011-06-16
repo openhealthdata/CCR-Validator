@@ -71,6 +71,6 @@
   </repositories>
 
   <properties>
-  	<drools.version>5.2.0.CR1</drools.version>
+  	<drools.version>5.2.0-snapshot</drools.version>
   </properties>
 </project>
