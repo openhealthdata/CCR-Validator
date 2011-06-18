@@ -69,7 +69,7 @@ rule "Functional status description can only be used without a problem or test"
 @author ("openhealthdata")
 	when
 		$f: FunctionType(description != null, $p:problem, $t:test)
-		(List(this == $p, size > 0) OR List(this == $t, size >0))
+		(List(this == $p, size > 0) || List(this == $t, size >0))
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");

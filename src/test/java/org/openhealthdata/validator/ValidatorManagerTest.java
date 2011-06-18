@@ -10,6 +10,8 @@ import org.openhealthdata.validator.drools.InternalKnowledgeBaseManager;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +26,7 @@ public class ValidatorManagerTest {
     public void validateTest() throws IOException{
         ValidationManager validationManager = new ValidationManager(new InternalKnowledgeBaseManager());
         ValidationResult vr = validationManager.validate(fileFromInputStream(getClass().getResourceAsStream("/ccr_sample.xml")));
+        Logger.getLogger(ValidatorManagerTest.class.getName()).log(Level.INFO, validationManager.convertToXML(vr));
         Assert.assertTrue(ValidationResultComparator.compare(vr, createExpectedResult(), true));
     }
     
