@@ -1,0 +1,47 @@
+#created on: Jul 1, 2011
+package org.astm.ccr.rules.debug
+
+#list any import classes here.
+import org.astm.ccr.CodedDescriptionType;
+
+
+#declare any global variables here
+
+
+
+/*
+rule "List Number of Objects Found"
+	salience -1
+	when
+		$count : Number() from accumulate (Object(),
+								init (double total = 0;),
+								action (total++),
+								result (total));
+	then 
+		System.out.println("Found Objects : " + $count);
+end
+*/
+
+rule "ccr Found Object"
+	salience -80
+	when
+		$o:Object()
+	then
+		System.out.println("Object Found: "+$o.getClass().getName());
+end
+
+rule "Object Count"
+	salience -90 
+	when
+		$total : Number() from accumulate (Object(),sum(1))
+	then
+		System.out.println("Total Objects Found: "+$total);
+end
+
+rule "List CodedDescriptionType Objects"
+	salience -100
+	when
+		CodedDescriptionType($t:text)
+	then
+		System.out.println("Found CDT: "+$t);
+end
