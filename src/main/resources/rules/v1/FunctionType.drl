@@ -43,21 +43,9 @@ rule "Functional status type must be one of the required strings"
 			"Mental Status", "Activities of Daily Living", "Home/Living Situation", 
 			"Ability to Care for Self") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("String ["+$t+"] is not valid for <Type> in functional status");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "String [" + $t + "] is not valid for <Type> in functional status" );
 end
 
 rule "Functional status description can only be used without a problem or test"
@@ -71,21 +59,9 @@ rule "Functional status description can only be used without a problem or test"
 		$f: FunctionType(description != null, $p: problem, $t: test )
         eval( $p.size() > 0 || $t.size() > 0 )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Functional status <Description> was found when a <Problem> or <Test> was present");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Functional status <Description> was found when a <Problem> or <Test> was present" );
 end
 
 rule "Functional status status must be one of the required strings"
@@ -100,19 +76,7 @@ rule "Functional status status must be one of the required strings"
 		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Chronic", "Temporary", "Resolved") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("String ["+$t+"] is not valid for <Status> in functional status");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "String [" + $t + "] is not valid for <Status> in functional status." );
 end

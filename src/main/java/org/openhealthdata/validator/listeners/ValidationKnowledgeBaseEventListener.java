@@ -14,6 +14,8 @@ import org.drools.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
 import org.drools.event.knowledgebase.AfterProcessAddedEvent;
 import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
 */
+import org.drools.event.knowledgebase.AfterProcessAddedEvent;
+import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
 import org.drools.event.knowledgebase.AfterRuleAddedEvent;
 import org.drools.event.knowledgebase.AfterRuleRemovedEvent;
 import org.drools.event.knowledgebase.BeforeFunctionRemovedEvent;
@@ -21,6 +23,8 @@ import org.drools.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
 import org.drools.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
+import org.drools.event.knowledgebase.BeforeProcessAddedEvent;
+import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
 /*
 import org.drools.event.knowledgebase.BeforeProcessAddedEvent;
 import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
@@ -29,6 +33,8 @@ import org.drools.event.knowledgebase.BeforeRuleAddedEvent;
 import org.drools.event.knowledgebase.BeforeRuleRemovedEvent;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.openhealthdata.validation.result.RuleType;
+
+import static org.openhealthdata.validator.DroolsUtil.stripQuotes;
 
 /**
  * This Listener creates and manages a <code>RuleType</code> list 
@@ -72,29 +78,32 @@ public class ValidationKnowledgeBaseEventListener implements
 		rt.setName(r.getName());
 		rt.setPackage(r.getPackageName());
 		// Check for the appropriate meta-attributes
-		String profile = r.getMetaAttribute("profile");
+		Map<String,Object> metaData = r.getMetaData();
+		String profile = (String)metaData.get("profile");
 		if (profile != null){
-			rt.setProfile(profile);
+			rt.setProfile(stripQuotes(profile));
 		}
-		String testid = r.getMetaAttribute("testid");
+		String testid = (String)metaData.get("testid");
 		if(testid != null){
-			rt.setId(testid);
+			rt.setId(stripQuotes(testid));
 		}
-		String title = r.getMetaAttribute("title");
+		String title = (String)metaData.get("title");
 		if(title != null){
-			rt.setTitle(title);
+			rt.setTitle(stripQuotes(title));
 		}
-		String description = r.getMetaAttribute("description");
+		String description = (String)metaData.get("description");
 		if (description != null){
+			description = stripQuotes(description);
+			if( ! description.endsWith(".")) description += ".";
 			rt.setDescription(description);
 		}
-		String source = r.getMetaAttribute("source");
+		String source = (String)metaData.get("source");
 		if (source != null){
-			rt.setSource(source);
+			rt.setSource(stripQuotes(source));
 		}
-		String author = r.getMetaAttribute("author");
+		String author = (String)metaData.get("author");
 		if (author !=null){
-			rt.setAuthor(author);
+			rt.setAuthor(stripQuotes(author));
 		}
 		rules.add(rt);
 	}
@@ -140,26 +149,20 @@ public class ValidationKnowledgeBaseEventListener implements
 	public void beforeRuleRemoved(BeforeRuleRemovedEvent arg0) {
 		// Nothing needed to be done
 	}
-/*  for drools 5.2
+
 	public void afterProcessAdded(AfterProcessAddedEvent arg0) {
 		// Nothing needed to be done
-		
 	}
 
 	public void afterProcessRemoved(AfterProcessRemovedEvent arg0) {
 		// Nothing needed to be done
-		
 	}
 
 	public void beforeProcessAdded(BeforeProcessAddedEvent arg0) {
 		// Nothing needed to be done
-		
 	}
 
 	public void beforeProcessRemoved(BeforeProcessRemovedEvent arg0) {
 		// Nothing needed to be done
-		
 	}
-*/
-
 }

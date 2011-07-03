@@ -21,8 +21,11 @@ package org.openhealthdata.validator.tree;
  * @author wlaun
  */
 public class Element {
+	private static int counter = 0;
+	
     private Xpath  xpath;
     private Object object;
+    private int    ordinal;
 
     /**
      * Constructor.
@@ -30,8 +33,9 @@ public class Element {
      * @param object the fact object
      */
     public Element( Xpath xpath, Object object ){
-        this.xpath  = xpath;
-        this.object = object;
+        this.xpath   = xpath;
+        this.object  = object;
+        this.ordinal = ++counter;
     }
     
     /**
@@ -50,12 +54,20 @@ public class Element {
         return object;
     }
     
+    /**
+     * Returns the element's ordinal, a numbering in document order;
+     * @return an int value
+     */
+    public int getOrdinal(){
+    	return ordinal;
+    }
+    
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString(){
-        return xpath.toString() + " => " + object.getClass().getSimpleName(); 
+        return xpath.toString() + "(" + ordinal + ") => " + object.getClass().getSimpleName(); 
     }
 }

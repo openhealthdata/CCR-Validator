@@ -18,7 +18,11 @@ package org.openhealthdata.validation.result;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.definition.rule.Rule;
+
+import static org.openhealthdata.validator.DroolsUtil.stripQuotes;
 import org.openhealthdata.validation.result.ValidationResult.ValidationUsed.Profile;
 
 /**
@@ -30,36 +34,29 @@ import org.openhealthdata.validation.result.ValidationResult.ValidationUsed.Prof
  */
 public class BaseValidationManager implements ValidationResultManager {
 
-	private ValidationResult result = new ValidationResult();
+	private static BaseValidationManager theInstance;
 
-	/**
-	 * Add a new Error from the rules engine to the validation result
-	 */
-	public void addError(String testUID, String message, String serverity,
-			String xpath) {
-		// Check to see if it is a fatal error and set result status
-		if (serverity.equals(ErrorType.FATAL)) {
-			result.setStatus(ValidationResult.FAILED);
+	public static ValidationResultManager getInstance(){
+		if( theInstance == null ){
+			theInstance = new BaseValidationManager();
 		}
-		ErrorType e = new ErrorType();
-		e.setXPathLocation(xpath);
-		e.setServerity(serverity);
-		e.setMessage(message);
-		TestResultType trt = getTestOrNew(testUID);
-
-		if (trt.getStatus() != null) {
-			trt.setStatus(serverity);
-			trt.getError().add(e);
-		} else {
-			trt.setStatus(getUpdatedStatus(trt.getStatus(), serverity));
-			trt.getError().add(e);
-		}
+		return theInstance;
 	}
+	
+	private ValidationResult result = new ValidationResult();
+ 
+	protected BaseValidationManager(){
+	}
+	
+	public void setStatus( String status ){
+		result.setStatus( status );
+	}
+	
 
 	/*
 	 * Updates the status of the Test based on the error severity
 	 */
-	private String getUpdatedStatus(String testStatus, String errorServerity) {
+	public static String getUpdatedStatus(String testStatus, String errorServerity) {
 
 		if (testStatus == null || testStatus.equals("")) {
 			if (errorServerity.equals(ErrorType.FATAL)) {
@@ -89,63 +86,47 @@ public class BaseValidationManager implements ValidationResultManager {
 		}
 	}
 
-	/**
-	 * Add error new error from the rules engine
-	 */
-	public void addError(String testUID, ErrorType error) {
-		TestResultType trt = getTestOrNew(testUID);
-		trt.setStatus(getUpdatedStatus(trt.getStatus(), error.getServerity()));
-		trt.getError().add(error);
-	}
-
 	/*
 	 * Check to see if the Test already exists in the ValidationResult
 	 */
-	private TestResultType getTestResult(String uid) {
+	private TestResultWrapper getTestResult(String uid) {
 		for (TestResultType trt : result.getTestResult()) {
 			if (uid.equals(trt.getUid())) {
-				return trt;
+				return (TestResultWrapper)trt;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Add a list of new errors to the validation result
-	 */
-	public void addError(String testUID, List<ErrorType> error) {
-		TestResultType trt = getTestOrNew(testUID);
-		for (ErrorType e : error) {
-			trt.setStatus(getUpdatedStatus(trt.getStatus(), e.getServerity()));
-			trt.getError().add(e);
-		}
-	}
-
+     * Add a failed rule test.
+     */
+    public TestResultWrapper addFailed( Rule rule ){
+        return this.addTest( rule, TestResultType.FAILED );
+    }
+    
 	/**
-	 * Add a new error from the rules engine
-	 */
-	public void addError(String testUID, String message, String serverity,
-			int lineNumber, int columnNumber) {
-		// Check to see if it is a fatal error and set result status
-		if (serverity.equals(ErrorType.FATAL)) {
-			result.setStatus(ValidationResult.FAILED);
-		}
-		ErrorType e = new ErrorType();
-		InFileLocation loc = new InFileLocation();
-		loc.setColumnNumber(columnNumber);
-		loc.setLineNumber(lineNumber);
-		e.setInFileLocation(loc);
-		e.setServerity(serverity);
-		e.setMessage(message);
-		TestResultType trt = getTestOrNew(testUID);
-		if (trt.getStatus() != null) {
-			trt.setStatus(serverity);
-			trt.getError().add(e);
-		} else {
-			trt.setStatus(getUpdatedStatus(trt.getStatus(), serverity));
-			trt.getError().add(e);
-		}
-	}
+     * Add a passed rule test.
+     */
+    public TestResultWrapper addPassed( Rule rule ){
+        return this.addTest( rule, TestResultType.PASSED );
+    }
+    
+	/**
+     * Add a rule test.
+     */
+    public TestResultWrapper addTest( Rule rule, String status ){
+        Map<String,Object> metaData = rule.getMetaData();
+        String testid = stripQuotes( (String)metaData.get("testid") );
+        String title  = stripQuotes( (String)metaData.get("title") );
+        String description = stripQuotes( (String)metaData.get("description") );
+        if( ! description.endsWith( "." ) ) description += ".";
+        String source = stripQuotes( (String)metaData.get("source") );
+        String profile = stripQuotes( (String)metaData.get("profile") ); 
+        return this.addTest( testid, title,
+                             description + " Source: " + source,
+                             status, profile );
+    }
 
 	/**
 	 * Add a new Test to the ValidationResult. It will discard already existing
@@ -171,9 +152,9 @@ public class BaseValidationManager implements ValidationResultManager {
 	/**
 	 * Add a new Test to the ValidationResult
 	 */
-	public TestResultType addTest(String testUID, String name,
+	public TestResultWrapper addTest(String testUID, String name,
 			String description, String status) {
-		TestResultType trt = getTestOrNew(testUID);
+		TestResultWrapper trt = getTestOrNew(testUID);
 		TestResultType.TestDescription tDesc = new TestResultType.TestDescription();
 		tDesc.setName(name);
 		tDesc.setDescription(description);
@@ -222,7 +203,7 @@ public class BaseValidationManager implements ValidationResultManager {
 	/**
 	 * Get Test by unique identifier
 	 */
-	public TestResultType getTest(String uid) {
+	public TestResultWrapper getTest(String uid) {
 		return getTestResult(uid);
 	}
 
@@ -231,11 +212,11 @@ public class BaseValidationManager implements ValidationResultManager {
 	 * a default TestResultType. This protects against some one writing a rule
 	 * without a TestResultType
 	 */
-	private TestResultType getTestOrNew(String uid) {
-		TestResultType trt = getTestResult(uid);
+	private TestResultWrapper getTestOrNew(String uid) {
+		TestResultWrapper trt = getTestResult(uid);
 		if (trt == null) {
 			// no existing test
-			trt = new TestResultType();
+			trt = new TestResultWrapper();
 			trt.setUid(uid);
 			TestResultType.TestDescription tDesc = new TestResultType.TestDescription();
 			tDesc.setDescription("Not Defined");
@@ -248,11 +229,11 @@ public class BaseValidationManager implements ValidationResultManager {
 	/**
 	 * Get a list of Test results by status
 	 */
-	public List<TestResultType> getTestByStatus(String status) {
-		LinkedList<TestResultType> rs = new LinkedList<TestResultType>();
+	public List<TestResultWrapper> getTestByStatus(String status) {
+		LinkedList<TestResultWrapper> rs = new LinkedList<TestResultWrapper>();
 		for (TestResultType t : result.getTestResult()) {
 			if (status.equals(t.getStatus())) {
-				rs.add(t);
+				rs.add((TestResultWrapper)t);
 			}
 		}
 		return rs;
@@ -268,9 +249,9 @@ public class BaseValidationManager implements ValidationResultManager {
 	/**
 	 * Add a new Test to the ValidationResult
 	 */
-	public TestResultType addTest(String testUID, String name,
+	public TestResultWrapper addTest(String testUID, String name,
 			String description, String status, List<String> profiles) {
-		TestResultType trt = addTest(testUID, name, description, status);
+		TestResultWrapper trt = addTest(testUID, name, description, status);
 		List<Profile> profs = result.getValidationUsed().getProfile();
 		Profile found = null;
 		for (String s : profiles) {
@@ -293,9 +274,9 @@ public class BaseValidationManager implements ValidationResultManager {
 	/**
 	 * Add new Test to ValidationResult
 	 */
-	public TestResultType addTest(String testUID, String name,
+	public TestResultWrapper addTest(String testUID, String name,
 			String description, String status, String profileID) {
-		TestResultType test = addTest(testUID, name, description, status);
+		TestResultWrapper test = addTest(testUID, name, description, status);
 		// Check for ValidationUsed
 		if (getResult().getValidationUsed() != null) {
 			// ValidationUsed Found so get Profiles

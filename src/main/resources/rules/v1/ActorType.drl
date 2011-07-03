@@ -21,6 +21,7 @@ package org.astm.ccr.rules.v1
 import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ErrorType;
+import org.openhealthdata.validator.tree.Element;
 
 import org.astm.ccr.ActorType;
 import org.astm.ccr.CodedDescriptionType;
@@ -38,25 +39,18 @@ rule "Each Actor must have a unique ActorObjectID"
 @profile ("E2369-05")
 @author ("openhealthdata")
 	when
-		$a1:ActorType($id1:actorObjectID)
-		$a2:ActorType(this != $a1, actorObjectID == $id1)
+		$a1: ActorType( $id1:actorObjectID )
+		Element( object == $a1, $ord1: ordinal )
+		not ( $ax:ActorType( actorObjectID == $id1 )
+		      and
+		      Element( object == $ax, ordinal < $ord1 ) )
+		Number( $count: intValue > 1 )
+		    from accumulate ( ActorType( actorObjectID == $id1 ), count() )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Actor with ActorObjectID of ["+
-			$id1+"] is used in more than one <Actor>");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "The ActorObjectID of [" + $id1 + "] is used in " +
+	               $count + " <Actor> elements, but it should be unique." );
 end
 
 rule "ActorObjectID format validity"
@@ -69,21 +63,9 @@ rule "ActorObjectID format validity"
 	when
 		ActorType($aid:actorObjectID not matches "[a-zA-Z]([\\w\\-_\\.])*")
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("ActorObjectID of ["+$aid+"] does not conform to the required format");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "ActorObjectID of [" + $aid + "] does not conform to the required format" );
 end
 
 rule "Valid Actor <Status> values"
@@ -98,20 +80,8 @@ rule "Valid Actor <Status> values"
 		CodedDescriptionType( this == $s, text not in ("Active", "Prior History No Longer Active", 
 			"Unknown") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Actor <Status> is not one of: Active, Prior History No Longer Active, Unknown.");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal(  "Actor <Status> is not one of: Active, Prior History No Longer Active, Unknown." );
 end
 

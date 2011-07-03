@@ -17,6 +17,7 @@
 package org.openhealthdata.validation.result;
 
 import java.util.List;
+import org.drools.definition.rule.Rule;
 /**
  * Interface for a Managed Validation Result
  * @author swaldren
@@ -30,7 +31,13 @@ public interface ValidationResultManager {
          * @return The managed validation result
          */
 	public ValidationResult getResult();
-
+	
+	/**
+	 * Sets the status in the ValidationResult.
+	 * @param status the status to set.
+	 */
+	public void setStatus(String status);
+	
         /**
          * Set the Validation Result to be managed
          *
@@ -99,6 +106,13 @@ public interface ValidationResultManager {
 	public void addRule(String id, String name, String title, String packge, String description, 
 			String profile, String source, String author);
 
+	public TestResultWrapper addFailed(Rule rule);
+	
+	public TestResultWrapper addPassed(Rule rule);
+	
+	public TestResultWrapper addTest(Rule rule, String status);
+	
+	
         /**
          * Added a test to the validation result
          * @param test
@@ -144,35 +158,6 @@ public interface ValidationResultManager {
          * @param status  The status as an enum (see static final strings in <code>TestResultType</code>
          * @return
          */
-	public List<TestResultType> getTestByStatus(String status);
-	/**
-         * Adds an error to a test as identified by the test unique identifier.
-         * It should create a stub test if no test found by unique identifier.
-         * @param testUID The unique identifier of the test
-         * @param message The error message
-         * @param serverity the serverity of the error as an enum (see static final string in <code>ErrorType</code>
-         * @param xpath An Xpath expression of the location of the error.
-         */
-	public void addError(String testUID, String message, String serverity, String xpath);
-	/**
-         * Adds an error to a test as identified by the test unique identifier
-         * @param testUID the unique identifier of the test
-         * @param error the error to add
-         */
-	public void addError(String testUID, ErrorType error);
-	/**
-         * Adds multiple errors to a test as identified by the test unique identifier
-         * @param testUID the unique identifier of the test
-         * @param error the list of errors to add
-         */
-	public void addError(String testUID, List<ErrorType> error);
-	/**
-         * Adds an error to a test as identified by the test uniqu identifier.
-         * @param testUID the unique identifier of the test
-         * @param message the error message
-         * @param serverity the serverity of the error as an enum (see static final string in <code>ErrorType</code>
-         * @param lineNumber the line number in the file where the error was found
-         * @param columnNumber the column number in the line where the error was found
-         */
-	public void addError(String testUID, String message, String serverity, int lineNumber, int columnNumber);
+	public List<TestResultWrapper> getTestByStatus(String status);
+
 }

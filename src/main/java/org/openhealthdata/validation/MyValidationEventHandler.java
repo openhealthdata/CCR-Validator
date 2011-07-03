@@ -56,7 +56,7 @@ public class MyValidationEventHandler implements javax.xml.bind.ValidationEventH
 		if (ve.getSeverity() != ValidationEvent.WARNING) {
 			ValidationEventLocator vel = ve.getLocator();
 			ErrorType er = new ErrorType();
-			er.setServerity(TestResultType.FAILED);
+			er.setSeverity(TestResultType.FAILED);
 			InFileLocation loc = new InFileLocation();
 			loc.setColumnNumber(vel.getColumnNumber());
 			loc.setLineNumber(vel.getLineNumber());

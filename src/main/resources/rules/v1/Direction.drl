@@ -41,21 +41,9 @@ rule "Direction stopIndicator if present can only be the string 'Yes'"
 		$d: Direction($s: stopIndicator)
 		CodedDescriptionType( this == $s, $t:text != "Yes" )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("String ["+$t+"] is not valid for StopIndictor");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "String [" + $t + "] is not valid for StopIndictor" );
 end
 
 rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN'"
@@ -69,21 +57,9 @@ rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN
 		$d: Direction($m: multipleDirectionModifier)
 		CodedDescriptionType( this == $m, $t:text, text not in ("AND", "OR", "THEN") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("String ["+$t+"] is not valid for MultipleDirectionModifier");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "String [" + $t + "] is not valid for MultipleDirectionModifier" );
 end
 
 rule "Direction when multiple direction modifier is 'THEN' there should be direction sequence position"
@@ -98,19 +74,8 @@ rule "Direction when multiple direction modifier is 'THEN' there should be direc
 		CodedDescriptionType( this == $m, $t:text == "THEN" )
 		Direction (this == $d, directionSequencePosition == null)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Direction with a 'THEN' multiple direction modifier does not contain a DirectionSequencePosition element");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Direction with a 'THEN' multiple direction modifier does not contain " +
+	               "a DirectionSequencePosition element" );
 end

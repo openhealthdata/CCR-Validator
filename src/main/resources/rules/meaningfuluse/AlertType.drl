@@ -52,22 +52,10 @@ rule "Medication Allergies MUST be encoded with UNII - Description"
 		CodedDescriptionType(this == $des, $c:code)
 		not (CodeType( codingSystem in ("UNII", "unii") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Alert Allergy ["+
-			$al.getCCRDataObjectID()+"] does not appear to be coded in UNII which is required if it is a medication allergy.");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);	
+	    val_result
+	    .addFailed( drools.getRule() )
+	    .addWarning( "Alert Allergy [" + $al.getCCRDataObjectID() + "] does not appear to be " +
+	                 "coded in UNII which is required if it is a medication allergy." );
 end
 	
 rule "Medication Allergies MUST be encoded with UNII - Agent"
@@ -88,20 +76,8 @@ rule "Medication Allergies MUST be encoded with UNII - Agent"
 		CodedDescriptionType( this == $pn, $c:code  )
 		not (CodeType( codingSystem in ("UNII", "unii") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Alert Allergy ["+
-			$al.getCCRDataObjectID()+"] does not appear to be coded in UNII which is required if it is a medication allergy.");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);	
+	    val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Alert Allergy [" + $al.getCCRDataObjectID() + "] does not appear to be " +
+	               "coded in UNII which is required if it is a medication allergy." );
 end

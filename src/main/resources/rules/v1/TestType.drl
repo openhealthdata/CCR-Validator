@@ -40,21 +40,9 @@ rule "Test type must be one of the required string values"
 		$t: TestType( $ty:type )
 		CodedDescriptionType( this == $ty, $tx:text, text not in ("Observation", "Result") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Test ["+$t.getCCRDataObjectID()+"] has an invalid type value ["+$tx+"]");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Test [" + $t.getCCRDataObjectID() + "] has an invalid type value [" + $tx + "]" );
 end
 
 rule "Test status must be one of the required string values"
@@ -69,19 +57,7 @@ rule "Test status must be one of the required string values"
 		CodedDescriptionType( this == $s, $tx:text, text not in ("Pending", "In Process Preliminary Results",
 			"Final Results", "Corrected Results") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Test ["+$t.getCCRDataObjectID()+"] has an invalid status value ["+$tx+"]");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Test [" + $t.getCCRDataObjectID() + "] has an invalid status value [" + $tx + "]" );
 end

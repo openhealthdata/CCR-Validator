@@ -120,7 +120,7 @@ public class ValidationManager {
 	private ValidationResult validate(File xml, String fileName) {
         KnowledgeBase kbase = kbaseManager.getKnowledgeBase();
 		// Get Default ValidationResult and add to ValidationManager
-		ValidationResultManager valResMan = new BaseValidationManager();
+		ValidationResultManager valResMan = BaseValidationManager.getInstance();
 		ValidationResult result = new ValidationResult();
 		result.setDisclaimer("This validation test provides no warranty that all constraints were checked for given " +
 				"profiles.  Additional testing may be required. Any issues should be reported to testing entity.");

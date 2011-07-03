@@ -45,22 +45,9 @@ rule "Each CCRDataObjectID must have a unique value"
 		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
 		CCRCodedDataObjectType(this != $c, CCRDataObjectID == $id)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("An CCRDataObjectID value of ["+
-			$id+"] is used in more than once");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "An CCRDataObjectID value of [" + $id + "] is used in more than once" );
 end
 
 rule "A CCRDataObjectID must not equal an ActorObjectID"
@@ -74,20 +61,7 @@ rule "A CCRDataObjectID must not equal an ActorObjectID"
 		$c: CCRCodedDataObjectType( $id:CCRDataObjectID )
 		ActorType( actorObjectID == $id )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("An CCRDataObjectID value of ["+
-			$id+"] is also used as an ActorObjectID");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "An CCRDataObjectID value of [" + $id + "] is also used as an ActorObjectID" );
 end

@@ -45,21 +45,10 @@ rule "MU - Problem description MUST be coded in either ICD9-CM, or SNOMED"
 		CodedDescriptionType( this == $d, $c:code )
 		not (CodeType( codingSystem in ("ICD9-CM", "ICD9CM", "SNOMED", "SNOMED-CT", "SNOMEDCT") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Problem ["+$p.getCCRDataObjectID()+"] does not appear to be coded in either ICD9-CM, ICD-10, or SNOMED");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+	    val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Problem [" + $p.getCCRDataObjectID() + "] does not appear to be " + 
+	               "coded in either ICD9-CM, ICD-10, or SNOMED" );
 end
 
 rule "MU - No Problem Found in CCR"
@@ -72,19 +61,8 @@ rule "MU - No Problem Found in CCR"
 	when
 		not $p: ProblemType()
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.PASSED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("No Problems were found therefore cannot evaluate compliance with Problem List criteria");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addPassed( drools.getRule() )
+	    .addWarning( "No Problems were found therefore cannot evaluate compliance with " +
+	                 "Problem List criteria" );
 end

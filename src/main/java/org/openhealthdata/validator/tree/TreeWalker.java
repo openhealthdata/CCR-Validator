@@ -65,7 +65,6 @@ public class TreeWalker {
 
     private int doObject( Xpath xpath, Object object ) throws Exception {
         int res = 1;
-        System.out.println( "insert "  + xpath );
         kRuntime.insert( object );
         kRuntime.insert( new Element( xpath, object ) );
         Class<?> clazz = object.getClass();

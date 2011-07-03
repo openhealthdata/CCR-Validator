@@ -81,7 +81,7 @@ public class MyErrorHandler implements ErrorHandler {
 	 */
 	private boolean handleError(SAXParseException ex){
 			ErrorType er = new ErrorType();
-			er.setServerity(ErrorType.FATAL);
+			er.setSeverity(ErrorType.FATAL);
 			InFileLocation loc = new InFileLocation();
 			loc.setColumnNumber(ex.getColumnNumber());
 			loc.setLineNumber(ex.getLineNumber());

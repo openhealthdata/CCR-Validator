@@ -47,21 +47,9 @@ rule "Results type must be one of the required string values"
 			"CT", "MRI", "Angiography", "Cardiac Echo", "Nuclear Medicine", "Pathology",
 			"Procedure") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Result ["+$rt.getCCRDataObjectID()+"] type ["+$tx+"] is not a valid value");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Result [" + $rt.getCCRDataObjectID() + "] type [" + $tx + "] is not a valid value" );
 end
 
 rule "Results and VitalSigns description should be coded in either CPT or LOINC where applicable"
@@ -76,19 +64,8 @@ rule "Results and VitalSigns description should be coded in either CPT or LOINC 
 		CodedDescriptionType( this == $d, $c:code  )
 		not (CodeType( codingSystem in ("CPT", "LOINC") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.PASSED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("ResultType ["+$rt.getCCRDataObjectID()+"] does not appear to be coded in CPT or LOINC");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addPassed( drools.getRule() )
+	    .addWarning( "ResultType [" + $rt.getCCRDataObjectID() +
+	                 "] does not appear to be coded in CPT or LOINC" );
 end
