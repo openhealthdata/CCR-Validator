@@ -42,7 +42,7 @@ rule "Results type must be one of the required string values"
 	when
 		Results( $r:result )
 		$rt:ResultType($ty:type) from $r
-		CodedDescriptionType (this == $ty, $tx:text not in ("Hematology", "Chemistry", "Serology", 
+		CodedDescriptionType (this == $ty, $tx:text, text not in ("Hematology", "Chemistry", "Serology", 
 			"Virology", "Toxicology", "Microbiology", "Imaging - X-ray", "Ultrasound", 
 			"CT", "MRI", "Angiography", "Cardiac Echo", "Nuclear Medicine", "Pathology",
 			"Procedure") )

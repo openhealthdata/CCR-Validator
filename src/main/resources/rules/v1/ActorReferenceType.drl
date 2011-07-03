@@ -73,7 +73,7 @@ rule "ActorReference should have an ActorRole"
 @author ("openhealthdata")
 	when
 		$a: ActorReferenceType($r:actorRole)
-		List(this == $r, size == 0)
+		eval( $r.size() == 0 )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");

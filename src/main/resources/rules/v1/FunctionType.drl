@@ -39,7 +39,7 @@ rule "Functional status type must be one of the required strings"
 @author ("openhealthdata")
 	when
 		$f: FunctionType($ty:type)
-		CodedDescriptionType( this == $ty, $t:text not in ("Ambulatory Status", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Ambulatory Status", 
 			"Mental Status", "Activities of Daily Living", "Home/Living Situation", 
 			"Ability to Care for Self") )
 	then
@@ -68,8 +68,8 @@ rule "Functional status description can only be used without a problem or test"
 @profile ("E2369-05")
 @author ("openhealthdata")
 	when
-		$f: FunctionType(description != null, $p:problem, $t:test)
-		(List(this == $p, size > 0) OR List(this == $t, size >0))
+		$f: FunctionType(description != null, $p: problem, $t: test )
+        eval( $p.size() > 0 || $t.size() > 0 )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");
@@ -97,7 +97,7 @@ rule "Functional status status must be one of the required strings"
 @author ("openhealthdata")
 	when
 		$f: FunctionType($s:status)
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Chronic", "Temporary", "Resolved") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");

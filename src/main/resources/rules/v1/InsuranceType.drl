@@ -71,7 +71,7 @@ rule "Payer type must be a valid structured text value"
 @author ("openhealthdata")
 	when
 		InsuranceType($t:type)
-		CodedDescriptionType( this == $t, $tx:text not in ("Self-Pay", "Primary Health Insurance",
+		CodedDescriptionType( this == $t, $tx:text, text not in ("Self-Pay", "Primary Health Insurance",
 			"Supplemental Health Insurance", "Prescription", "Drug Benefit", "Mental Health Benefit",
 			"Long Term Care Benefit", "Worker's Compensation", "Auto Insurance", "Dental Insurance", 
 			"Other") )

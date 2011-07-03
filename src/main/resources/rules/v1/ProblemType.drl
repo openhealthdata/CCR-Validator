@@ -40,7 +40,7 @@ rule "Problem type must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$p: ProblemType( $ty:type )
-		CodedDescriptionType( this == $ty, $t:text not in ("Problem", "Condition", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Problem", "Condition", 
 			"Diagnosis", "Symptom", "Finding", "Complaint", "Functional Limitation") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
@@ -98,7 +98,7 @@ rule "Problem status must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$p: ProblemType( $s:status )
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Inactive", "Chronic", "Intermittent", "Recurrent", "Rule Out", "Ruled Out", "Resolved") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");

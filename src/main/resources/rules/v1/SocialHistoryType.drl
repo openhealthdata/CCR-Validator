@@ -39,7 +39,7 @@ rule "Social History status must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$sht:SocialHistoryType($s:status)
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Prior History No Longer Active", "Unknown") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");

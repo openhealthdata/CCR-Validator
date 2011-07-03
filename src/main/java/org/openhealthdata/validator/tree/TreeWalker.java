@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.KnowledgeRuntime;
 
 /**
  * An object of this class provides a simple service for inserting all
@@ -34,16 +34,16 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class TreeWalker {
     
-    private StatefulKnowledgeSession kSession;
-    private Package pakkage;
-    private Reflector reflector = new Reflector();
+    private KnowledgeRuntime kRuntime;
+    private Package          pakkage;
+    private Reflector        reflector = new Reflector();
 
     /**
      * Constructor.
      * @param kSession the session into which elements should be inserted,
      */
-    public TreeWalker( StatefulKnowledgeSession kSession ){
-        this.kSession = kSession;
+    public TreeWalker( KnowledgeRuntime kRuntime ){
+        this.kRuntime = kRuntime;
     }
     
     /**
@@ -66,8 +66,8 @@ public class TreeWalker {
     private int doObject( Xpath xpath, Object object ) throws Exception {
         int res = 1;
         System.out.println( "insert "  + xpath );
-        kSession.insert( object );
-        kSession.insert( new Element( xpath, object ) );
+        kRuntime.insert( object );
+        kRuntime.insert( new Element( xpath, object ) );
         Class<?> clazz = object.getClass();
         Collection<Reflector.Entry> entries = reflector.getMethods( clazz );
         for( Reflector.Entry entry: entries ){

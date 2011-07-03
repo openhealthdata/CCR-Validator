@@ -67,7 +67,7 @@ rule "Direction multiple direction modifier must be either 'AND', 'OR', or 'THEN
 @author ("openhealthdata")
 	when
 		$d: Direction($m: multipleDirectionModifier)
-		CodedDescriptionType( this == $m, $t:text not in ("AND", "OR", "THEN") )
+		CodedDescriptionType( this == $m, $t:text, text not in ("AND", "OR", "THEN") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");

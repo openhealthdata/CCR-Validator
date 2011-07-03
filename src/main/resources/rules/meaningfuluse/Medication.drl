@@ -21,6 +21,7 @@ package org.astm.ccr.rules.meaningfuluse
 import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ErrorType;
+import org.openhealthdata.validator.tree.Element;
 
 import org.astm.ccr.StructuredProductType;
 import org.astm.ccr.StructuredProductType.Product;
@@ -72,7 +73,7 @@ rule "MU - No Medication List Found in CCR"
 @profile ("RIN 0991-AB58")
 @author ("openhealthdata")
 	when
-		not $m: Medications()
+		not Element( xpath.name == "Medication" )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");
 		String title = drools.getRule().getMetaAttribute("title");

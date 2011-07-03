@@ -42,7 +42,7 @@ rule "Medication type must of one of the required string values"
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $ty:type ) from $m
-		CodedDescriptionType( this == $ty, $t:text not in ("Medication", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Medication", 
 			"IV Fluid", "Parental Nutrition", "Supplemental Nutrition", 
 			"Immunization", "Disposable", "Supplies", "Device", "Implantable Device", 
 			"Durable Medical Equipment") )
@@ -75,7 +75,7 @@ rule "Medication status must of one of the required string values"
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $s:status  ) from $m
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"On Hold", "Prior History No Longer Active") )
 	then
 		String testid = drools.getRule().getMetaAttribute("testid");

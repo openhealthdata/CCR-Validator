@@ -117,7 +117,7 @@ public class Reflector {
         if( xmlType != null ) return xmlType.propOrder();
         
         // Fallback: access fields
-        throw new IllegalStateException( "no propOrder" );
+        throw new IllegalStateException( "no propOrder on class " + clazz.getName() );
     }
     
     private Method methodForProperty( Class<?> clazz, String property ){
