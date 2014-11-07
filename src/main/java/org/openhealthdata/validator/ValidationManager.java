@@ -18,13 +18,10 @@ package org.openhealthdata.validator;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,13 +32,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
-import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.openhealthdata.validation.CCRV1SchemaValidator;
 import org.openhealthdata.validation.result.BaseValidationManager;
@@ -49,6 +41,7 @@ import org.openhealthdata.validation.result.RuleType;
 import org.openhealthdata.validation.result.ValidationResult;
 import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validator.drools.KnowledgeBaseManager;
+import org.openhealthdata.validator.tree.TreeWalker;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -124,10 +117,10 @@ public class ValidationManager {
 	 * inserting the <code>Object</code> XML into working memory 
 	 * along with the CCRV1SchemaValidator
 	 */
-	private ValidationResult validate(Object xml, String fileName) {
+	private ValidationResult validate(File xml, String fileName) {
         KnowledgeBase kbase = kbaseManager.getKnowledgeBase();
 		// Get Default ValidationResult and add to ValidationManager
-		ValidationResultManager valResMan = new BaseValidationManager();
+		ValidationResultManager valResMan = BaseValidationManager.getInstance();
 		ValidationResult result = new ValidationResult();
 		result.setDisclaimer("This validation test provides no warranty that all constraints were checked for given " +
 				"profiles.  Additional testing may be required. Any issues should be reported to testing entity.");
@@ -152,8 +145,10 @@ public class ValidationManager {
 		result.getRules().getRule().addAll(getRuleTypes(rules));
 		//Set the global variable which will be used by the rules to aggregate results of validation
 		ksession.setGlobal("val_result", valResMan);
-		ksession.insert(xml);
+		
+        ksession.insert( xml );
 		ksession.insert(ccrSchVal);
+		
 		// Run the rules
 		ksession.fireAllRules();
 		// Recycle the knowledge session

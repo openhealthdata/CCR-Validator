@@ -40,24 +40,13 @@ rule "Problem type must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$p: ProblemType( $ty:type )
-		CodedDescriptionType( this == $ty, $t:text not in ("Problem", "Condition", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Problem", "Condition", 
 			"Diagnosis", "Symptom", "Finding", "Complaint", "Functional Limitation") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Problem ["+$p.getCCRDataObjectID()+"] type ["+$t+"] is not a valid string value");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Problem [" + $p.getCCRDataObjectID() + "] type [" + $t +
+	               "] is not a valid string value" );
 end
 
 rule "Problem description should be coded in either ICD-9, ICD9-CM, ICD-10, or SNOMED"
@@ -72,21 +61,10 @@ rule "Problem description should be coded in either ICD-9, ICD9-CM, ICD-10, or S
 		CodedDescriptionType( this == $d, $c:code )
 		not (CodeType( codingSystem in ("ICD9", "ICD-9","ICD9CM","ICD-9CM","ICD9-CM", "ICD10","ICD-10", "SNOMED", "SNOMED-CT") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.PASSED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Problem ["+$p.getCCRDataObjectID()+"] does not appear to be coded in either ICD9, ICD-9, ICD9-CM, ICD10, ICD-10, SNOMED-CT, or SNOMED");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addPassed( drools.getRule() )
+	    .addWarning( "Problem [" + $p.getCCRDataObjectID() + "] does not appear to be " +
+	                 "coded in either ICD9, ICD-9, ICD9-CM, ICD10, ICD-10, SNOMED-CT, or SNOMED" );
 end
 
 rule "Problem status must be one of the required string values"
@@ -98,22 +76,11 @@ rule "Problem status must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$p: ProblemType( $s:status )
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Inactive", "Chronic", "Intermittent", "Recurrent", "Rule Out", "Ruled Out", "Resolved") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("A <Status><Text> of ["+$t+"] for Problem ["+$p.getCCRDataObjectID()+"] is not one of the required values");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "A <Status><Text> of [" + $t + "] for Problem [" + $p.getCCRDataObjectID() +
+	               "] is not one of the required values" );
 end

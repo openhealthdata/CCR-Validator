@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -43,6 +44,7 @@ import javax.xml.validation.Validator;
 import org.astm.ccr.ContinuityOfCareRecord;
 import org.openhealthdata.validation.result.ErrorType;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -210,6 +212,9 @@ public class CCRV1SchemaValidator extends SchemaValidator {
 				JAXBContext jc = JAXBContext.newInstance( "org.astm.ccr" );
 				Unmarshaller um = jc.createUnmarshaller();
 				ccr = (ContinuityOfCareRecord)um.unmarshal(xml);
+				// Alternatively: use a Binder providing access to XML nodes.
+//				Binder<Node> binder = jc.createBinder();
+//				ccr = (ContinuityOfCareRecord)binder.unmarshal( xml );
 			}
 		} catch (SAXException e) {
 			// This is the exception thrown for an invalid CCR XML

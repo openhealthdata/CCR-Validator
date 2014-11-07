@@ -69,7 +69,7 @@ public class ErrorType {
     @XmlElement(name = "Message", required = true)
     protected String message;
     @XmlAttribute(required = true)
-    protected String serverity;
+    protected String severity;
 
     /**
      * Gets the value of the inFileLocation property.
@@ -168,27 +168,27 @@ public class ErrorType {
     }
 
     /**
-     * Gets the value of the serverity property.
+     * Gets the value of the severity property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getServerity() {
-        return serverity;
+    public String getSeverity() {
+        return severity;
     }
 
     /**
-     * Sets the value of the serverity property.
+     * Sets the value of the severity property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setServerity(String value) {
-        this.serverity = value;
+    public void setSeverity(String value) {
+        this.severity = value;
     }
 
 }

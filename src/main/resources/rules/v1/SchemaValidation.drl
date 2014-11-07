@@ -22,6 +22,7 @@ import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ErrorType;
 import org.openhealthdata.validation.CCRV1SchemaValidator;
+import org.openhealthdata.validator.tree.TreeWalker;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -47,25 +48,16 @@ rule "Check for Schema Errors - DOM"
 		// TODO Make the LHS more specific for deployment
 		// 		in multi-standard rulebases
 		$c: CCRV1SchemaValidator()
-		$d:Document()
+		$d: Document()
 	then
 		//System.out.println("Checking for Schema Errors");
 		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
 		if($c.isValid($d)){
 			insert($c.getValidRootObject());
-		}else{
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-			val_result.addError(testid, $c.getErrors());
+		} else {
+		    val_result
+	        .addFailed( drools.getRule() )
+	        .addError( $c.getErrors() );
 		}
 end
 
@@ -86,19 +78,10 @@ rule "Check for Schema Errors - InputStream"
 		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
 		if($c.isValid($is)){
 			insert($c.getValidRootObject());
-		}else{
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-			val_result.addError(testid, $c.getErrors());
+		} else {
+		    val_result
+	        .addFailed( drools.getRule() )
+	        .addError( $c.getErrors() );
 		}
 end
 
@@ -115,23 +98,20 @@ rule "Check for Schema Errors - File"
 		$c: CCRV1SchemaValidator()
 		$is:File()
 	then
-		//System.out.println("Checking for Schema Errors");
 		val_result.addValidationUsed("CCR","V1.0","E2369", "2005", "E2369-05");
 		val_result.setFileTested($is.getName());
-		if($c.isValid($is)){
-			insert($c.getValidRootObject());
-		}else{
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-			val_result.addError(testid, $c.getErrors());
+		if( $c.isValid($is) ) {
+			Object xml = $c.getValidRootObject();
+			TreeWalker treeWalker = new TreeWalker( kcontext.getKnowledgeRuntime() );
+		    try {
+                int nIns = treeWalker.walk( "ContinuityOfCareRecord", xml );
+                System.out.println( "inserted: " + nIns );
+            } catch ( Exception e ) {
+                throw new IllegalStateException( "Could not traverse the XML document.", e );
+            }
+		} else {
+            val_result
+	        .addFailed( drools.getRule() )
+	        .addError( $c.getErrors() );
 		}
 end

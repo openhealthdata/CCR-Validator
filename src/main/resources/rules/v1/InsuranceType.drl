@@ -45,21 +45,10 @@ rule "A Payer dateTime must be an exact datetime"
 		$i:InsuranceType($dates:dateTime)
 		DateTimeType(exactDateTime == null) from $dates
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Payer ["+$i.getCCRDataObjectID()+"] has a DateTime that is not using the ExactDateTime element");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Payer [" + $i.getCCRDataObjectID() + "] has a DateTime that is " +
+	               "not using the ExactDateTime element" );
 end
 
 rule "Payer type must be a valid structured text value"
@@ -71,26 +60,14 @@ rule "Payer type must be a valid structured text value"
 @author ("openhealthdata")
 	when
 		InsuranceType($t:type)
-		CodedDescriptionType( this == $t, $tx:text not in ("Self-Pay", "Primary Health Insurance",
+		CodedDescriptionType( this == $t, $tx:text, text not in ("Self-Pay", "Primary Health Insurance",
 			"Supplemental Health Insurance", "Prescription", "Drug Benefit", "Mental Health Benefit",
 			"Long Term Care Benefit", "Worker's Compensation", "Auto Insurance", "Dental Insurance", 
 			"Other") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Payer type ["+$tx+"] is not a valid value");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Payer type [" + $tx + "] is not a valid value" );
 end
 
 rule "Payer IDs must have a type"
@@ -104,19 +81,7 @@ rule "Payer IDs must have a type"
 		$i:InsuranceType($ids:IDs)
 		IDType( type == null ) from $ids
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Payer ["+$i.getCCRDataObjectID()+"] has an IDs element without a <Type>");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Payer [" + $i.getCCRDataObjectID() + "] has an IDs element without a <Type>" );
 end

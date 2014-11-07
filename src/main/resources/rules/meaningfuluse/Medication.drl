@@ -21,6 +21,7 @@ package org.astm.ccr.rules.meaningfuluse
 import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ErrorType;
+import org.openhealthdata.validator.tree.Element;
 
 import org.astm.ccr.StructuredProductType;
 import org.astm.ccr.StructuredProductType.Product;
@@ -46,22 +47,10 @@ rule "Medication product code should be encoded in RXNORM or NDC"
 		CodedDescriptionType( this == $pn, $c:code  )
 		not (CodeType( codingSystem in ("rxnorm", "RxNorm", "RXNORM", "NDC", "ndc") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Medication ["+
-			$s.getCCRDataObjectID()+"] ProductName does not appear to be coded in RxNorm");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);	
+	    val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Medication [" + $s.getCCRDataObjectID() + "] ProductName does not appear " +
+	               "to be coded in RxNorm" );
 end
 
 rule "MU - No Medication List Found in CCR"
@@ -72,21 +61,10 @@ rule "MU - No Medication List Found in CCR"
 @profile ("RIN 0991-AB58")
 @author ("openhealthdata")
 	when
-		not $m: Medications()
+		not Element( xpath.name == "Medication" )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.PASSED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("No Medications were found therefore cannot evaluate compliance with Medication List criteria");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addPassed( drools.getRule() )
+	    .addWarning( "No Medications were found therefore cannot evaluate compliance with " + 
+	                 "Medication List criteria" );
 end

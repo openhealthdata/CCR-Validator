@@ -22,6 +22,15 @@ import java.io.FilenameFilter;
 import org.drools.builder.ResourceType;
 
 public class DroolsUtil {
+	
+	public static String stripQuotes(String s){
+		if(s == null) return null;
+		if(s.startsWith("\"") && s.endsWith("\"")) {
+			return s.substring(1,s.length()-1);
+		} else {
+			return s;
+		}
+	}
 
 	public static FilenameFilter getFilter(ResourceType rt) {
 		if (rt == ResourceType.DRL) {

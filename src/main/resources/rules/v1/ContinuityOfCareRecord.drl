@@ -41,22 +41,10 @@ rule "CCR Version 1.0 must have of string V1.0 as Version"
 	when
 		$c:ContinuityOfCareRecord($v:version != "V1.0")
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("CCR with Version of ["+
-			$v+"]  is invalid. (Many other tests will not be performed until fixed)");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "CCR with Version of [" + $v + "] is invalid. " +
+	               "(Many other tests will not be performed until fixed.)" );
 end
 
 rule "CCR must have an ExactDateTime"
@@ -68,24 +56,13 @@ rule "CCR must have an ExactDateTime"
 @author ("openhealthdata")
 	when
 		$c:ContinuityOfCareRecord($d:dateTime)
-		DateTimeType(this == $d, exactDateTime not matches "([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?")
+		DateTimeType(this == $d, exactDateTime not matches "([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?")
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("CCR with CCRDocumentObjectID of ["+
-			$c.getCCRDocumentObjectID()+"] does not contain an <ExactDateTime> for its <DateTime> in the correct format (yyyy-mm-ddThh:mm:ss.ss[Z or +-hh:mm])");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "CCR with CCRDocumentObjectID of [" + $c.getCCRDocumentObjectID() +
+	               "] does not contain an <ExactDateTime> for its <DateTime> in the " +
+	               "correct format (yyyy-mm-ddThh:mm:ss.ss[Z or +-hh:mm])" );
 end
 
 rule "CCR should not have any datetime children except ExactDateTime"
@@ -100,20 +77,8 @@ rule "CCR should not have any datetime children except ExactDateTime"
 		DateTimeType(this == $d && ($a:age != null || $ap:approximateDateTime != null) && $dt:dateTimeRange)
 		List(this == $dt, size >0)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("CCR with CCRDocumentObjectID of ["+
-			$c.getCCRDocumentObjectID()+"] should not contain children other than <ExactDateTime> for its <DateTime>");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "CCR with CCRDocumentObjectID of [" + $c.getCCRDocumentObjectID() +
+	               "] should not contain children other than <ExactDateTime> for its <DateTime>" );
 end

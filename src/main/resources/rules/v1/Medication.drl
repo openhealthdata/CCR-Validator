@@ -42,27 +42,15 @@ rule "Medication type must of one of the required string values"
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $ty:type ) from $m
-		CodedDescriptionType( this == $ty, $t:text not in ("Medication", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Medication", 
 			"IV Fluid", "Parental Nutrition", "Supplemental Nutrition", 
 			"Immunization", "Disposable", "Supplies", "Device", "Implantable Device", 
 			"Durable Medical Equipment") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Medication ["+
-			$spt.getCCRDataObjectID()+"] Type ["+$t+"] does not appear to be one of the required String values");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);	
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Medication [" + $spt.getCCRDataObjectID() + "] Type [" + $t +
+	               "] does not appear to be one of the required String values" );
 end
 
 rule "Medication status must of one of the required string values"
@@ -75,25 +63,13 @@ rule "Medication status must of one of the required string values"
 	when
 		Medications($m:medication)
 		$spt:StructuredProductType( $s:status  ) from $m
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"On Hold", "Prior History No Longer Active") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Medication ["+
-			$spt.getCCRDataObjectID()+"] Status ["+$t+"] does not appear to be one of the required String values");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);	
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Medication [" + $spt.getCCRDataObjectID() + "] Status [" + $t +
+	               "] does not appear to be one of the required String values" );
 end
 
 rule "Medication product code should be encoded in RXNORM or NDC"
@@ -110,20 +86,8 @@ rule "Medication product code should be encoded in RXNORM or NDC"
 		CodedDescriptionType( this == $pn, $c:code  )
 		not (CodeType( codingSystem in ("rxnorm", "RxNorm", "RXNORM", "ndc", "NDC", "National Drug Code") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Medication ["+
-			$s.getCCRDataObjectID()+"] ProductName does not appear to be coded in either RxNorm or NDC");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);	
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addWarning( "Medication [" + $s.getCCRDataObjectID() + "] ProductName does not appear " +
+	                 "to be coded in either RxNorm or NDC" );
 end

@@ -44,21 +44,10 @@ rule "MU - Procedure description MUST be coded in either ICD9-CM, or CPT-4"
 		CodedDescriptionType( this == $d, $c:code )
 		not (CodeType( codingSystem in ("ICD9-CM", "ICD9CM", "CPT4", "CPT-4") ) from $c)
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("Procedure ["+$p.getCCRDataObjectID()+"] does not appear to be coded in either ICD9-CM or CPT-4");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "Procedure [" + $p.getCCRDataObjectID() + "] does not appear to be coded " +
+	               "in either ICD9-CM or CPT-4" );
 end
 
 rule "MU - No Procedure Found in CCR"
@@ -71,19 +60,8 @@ rule "MU - No Procedure Found in CCR"
 	when
 		not $p: ProcedureType()
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.PASSED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("No Procedures were found therefore cannot evaluate compliance with Procedure criteria");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addPassed( drools.getRule() )
+	    .addWarning( "No Procedures were found therefore cannot evaluate compliance with " + 
+	                 "Procedure criteria" );
 end

@@ -21,6 +21,7 @@ package org.astm.ccr.rules.v1
 import org.openhealthdata.validation.result.ValidationResultManager;
 import org.openhealthdata.validation.result.TestResultType;
 import org.openhealthdata.validation.result.ErrorType;
+import org.openhealthdata.validator.tree.Element;
 
 import org.astm.ccr.ActorType;
 import org.astm.ccr.ActorReferenceType;
@@ -43,25 +44,13 @@ rule "ActorReference requires a valid ActorObjectID"
 @author ("openhealthdata")
 	when
 		ActorReferenceType( $ref:actorID != null)
-		not (exists ActorType( $id:actorObjectID == $ref))
+		not ActorType( $id:actorObjectID == $ref )
 		//ArrayList(size != 1) from collect (ActorType( $id:actorObjectID == $ref))
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("ActorReference with ActorID of ["+
-			$ref+"] does not equal any Actor's ActorObjectID");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "ActorReference with ActorID of [" + $ref +
+	               "] does not equal any Actor's ActorObjectID" );
 end
 
 rule "ActorReference should have an ActorRole"
@@ -73,24 +62,14 @@ rule "ActorReference should have an ActorRole"
 @author ("openhealthdata")
 	when
 		$a: ActorReferenceType($r:actorRole)
-		List(this == $r, size == 0)
+		eval( $r.size() == 0 )
+		$e: Element( object == $a )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("It is recommended that each use of <ActorReference> contain at least one "+
-		"<ActorRole>.  ActorReference with Actorid ["+$a.getActorID()+"] does not have an ActorRole.");
-		e.setServerity(ErrorType.WARN);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addWarning( "It is recommended that each use of an Actor reference contain at least one "+
+		             "<ActorRole>. <" + $e.getXpath().getName() + "> at " + $e.getXpath() +
+		             " with ActorID [" + $a.getActorID() + "] does not have an ActorRole." );
 end
 
 

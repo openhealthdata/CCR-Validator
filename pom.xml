@@ -27,7 +27,7 @@
     <dependency>
     	<groupId>org.drools</groupId>
     	<artifactId>drools-persistence-jpa</artifactId>
-    	<version>5.0.1</version>
+    	<version>5.2.0.Final</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
@@ -66,6 +66,6 @@
   </repositories>
 
   <properties>
-    <drools.version>5.2.0-SNAPSHOT</drools.version>
+    <drools.version>5.2.0</drools.version>
   </properties>
 </project>

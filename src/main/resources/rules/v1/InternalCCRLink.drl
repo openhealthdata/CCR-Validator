@@ -38,23 +38,12 @@ rule "Every InternalCCRLink must point to an ObjectID"
 @author ("openhealthdata")
 	when
 		InternalCCRLink( $id:linkID )
-		not (exists( CCRCodedDataObjectType( CCRDataObjectID == $id ) OR ActorType(actorObjectID == $id)))
+		not CCRCodedDataObjectType( CCRDataObjectID == $id )
+		not ActorType( actorObjectID == $id )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("InternalCCRLink with linkID of ["+
-			$id+"] does not equal any ActorObjectID or CCRDataObjectID");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);		
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "InternalCCRLink with linkID of [" + $id +
+	               "] does not equal any ActorObjectID or CCRDataObjectID" );
 end
 

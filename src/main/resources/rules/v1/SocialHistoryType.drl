@@ -39,22 +39,11 @@ rule "Social History status must be one of the required string values"
 @author ("openhealthdata")
 	when
 		$sht:SocialHistoryType($s:status)
-		CodedDescriptionType( this == $s, $t:text not in ("Active", 
+		CodedDescriptionType( this == $s, $t:text, text not in ("Active", 
 			"Prior History No Longer Active", "Unknown") )
 	then
-		String testid = drools.getRule().getMetaAttribute("testid");
-		String title = drools.getRule().getMetaAttribute("title");
-		String description = drools.getRule().getMetaAttribute("description");
-		String source = drools.getRule().getMetaAttribute("source");
-		String profile = drools.getRule().getMetaAttribute("profile"); 
-		val_result.addTest(
-			testid,
-			title,
-			description+ " Source: "+
-			source,
-			TestResultType.FAILED, profile);
-		ErrorType e = new ErrorType();
-		e.setMessage("SocialHistory item ["+$sht.getCCRDataObjectID()+"] has an invalid status value ["+$t+"]");
-		e.setServerity(ErrorType.FATAL);
-		val_result.addError(testid, e);
+		val_result
+	    .addFailed( drools.getRule() )
+	    .addFatal( "SocialHistory item [" + $sht.getCCRDataObjectID() +
+                   "] has an invalid status value [" + $t + "]" );
 end

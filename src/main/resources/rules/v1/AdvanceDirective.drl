@@ -43,7 +43,7 @@ rule "AdvanceDirective type must one of required values"
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $ty:type ) from $a
-		CodedDescriptionType( this == $ty, $t:text not in ("Resuscitation Status", "Intubation Status", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Resuscitation Status", "Intubation Status", 
 			"IV Fluid and Support Status", "CPR Status", "Antibiotic Status", 
 			"Life Support Status","Tube Feedings", "Other") )
 	then
@@ -156,7 +156,7 @@ rule "AdvanceDirective example datetime type values"
 		Body($a:advanceDirectives)
 		$c:CCRCodedDataObjectType($dates:dateTime) from $a
 		DateTimeType($ty:type) from $dates
-		CodedDescriptionType( this == $ty, $t:text not in ("Last Recorded", "Verified With Patient", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Last Recorded", "Verified With Patient", 
 			"Verified With Parent", "Verified With Guardian", "Verified With Family", 
 			"Verified With Durable Power Of Attorney for Healthcare", "Verified With Treating Physician", 
 			"Start Date", "End Date") )
@@ -185,7 +185,7 @@ rule "AdvanceDirective required status values"
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $s:status ) from $a
-		CodedDescriptionType( this == $s, $t:text not in ("Current and Verified", "Supported By Healthcare Will",
+		CodedDescriptionType( this == $s, $t:text, text not in ("Current and Verified", "Supported By Healthcare Will",
 			"Supported By Durable Power of Attorney for Healthcare", "Verified With Family Only",
 			"Verified By Medical Record Only") )
 	then
@@ -212,7 +212,7 @@ rule "AdvanceDirective required type values"
 	when
 		Body($a:advanceDirectives)
 		CCRCodedDataObjectType( $ty:type ) from $a
-		CodedDescriptionType( this == $ty, $t:text not in ("Resuscitation Status", "Intubation Status", 
+		CodedDescriptionType( this == $ty, $t:text, text not in ("Resuscitation Status", "Intubation Status", 
 			"IV Fluid and Support Status", "CPR Status", "Antibiotic Status", 
 			"Life Support Status","Tube Feedings", "Other") )
 	then
